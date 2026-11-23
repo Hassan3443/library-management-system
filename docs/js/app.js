@@ -140,13 +140,13 @@ function renderBookDetails() {
   if (!elig.ok) {
     document.getElementById("action-result").innerHTML =
       `<div class="notice">Borrowing is blocked for this member: ${elig.reasons.join("; ")}.
-       Resolve this on the <a href="member.html">member dashboard</a> first (FR-08).</div>`;
+       Resolve this on the <a href="member.html">member dashboard</a> first (FR-05, business rules).</div>`;
   }
   document.getElementById("borrow").addEventListener("click", () => {
     const current = memberEligibility();
     if (!current.ok) {
       document.getElementById("action-result").innerHTML =
-        `<div class="notice">Borrow request blocked: ${current.reasons.join("; ")} (FR-08).</div>`;
+        `<div class="notice">Borrow request blocked: ${current.reasons.join("; ")} (FR-05, business rules).</div>`;
       return;
     }
     document.getElementById("action-result").innerHTML =
@@ -173,7 +173,7 @@ function renderMemberDashboard() {
     else if (days <= 3) notices.push(`<div class="notice ok">Reminder: "${esc(b.title)}" is due in ${days} day(s), on ${l.dueDate} (FR-11).</div>`);
   });
   const elig = memberEligibility();
-  if (!elig.ok) notices.unshift(`<div class="notice">Borrowing is currently blocked for this account: ${elig.reasons.join("; ")} (FR-08).</div>`);
+  if (!elig.ok) notices.unshift(`<div class="notice">Borrowing is currently blocked for this account: ${elig.reasons.join("; ")} (FR-05, business rules).</div>`);
   document.getElementById("notices").innerHTML = notices.join("");
 
   document.getElementById("loans").innerHTML = mine.map(l => {
@@ -518,4 +518,31 @@ function renderLoginPage() {
       });
     });
   }).observe(document.body, { childList: true, subtree: true });
+})();
+
+
+/* Claude color + motion round: pointer spotlight + search swap-in */
+(() => {
+  if (!matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) return;
+  document.addEventListener('pointermove', e => {
+    const el = e.target.closest?.('.grid .card, .stat'); if (!el) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  }, { passive: true });
+})();   /* delegated, so live-search re-renders keep working */
+
+(() => {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const t0 = performance.now();
+  new MutationObserver(muts => {
+    if (performance.now() - t0 < 800) return;          /* leave first render to your stagger/reveal */
+    muts.forEach(m => { let i = 0;
+      m.addedNodes.forEach(n => {
+        if (n.nodeType !== 1 || !n.matches('.card, tbody tr, li')) return;
+        n.style.setProperty('--i', i++); n.classList.add('swap-in');
+        n.addEventListener('animationend', () => n.classList.remove('swap-in'), { once: true });
+      });
+    });
+  }).observe(document.querySelector('main') || document.body, { childList: true, subtree: true });
 })();

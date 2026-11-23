@@ -383,8 +383,6 @@ label:has(+ :required)::after { content: " *"; color: var(--danger); }   /* drop
 @media (prefers-reduced-motion: no-preference) {
 
   /* Hero: slow gradient drift + bobbing book spines + load shine */
-  .hero { background-size: 165% 165%; animation: heroDrift 16s ease-in-out infinite alternate; }
-  @keyframes heroDrift { from { background-position: 0% 45%; } to { background-position: 100% 55%; } }
   .hero::before { animation: spineBob 6s ease-in-out infinite; }
   @keyframes spineBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 
@@ -438,3 +436,103 @@ label:has(+ :required)::after { content: " *"; color: var(--danger); }   /* drop
   input, select, textarea { transition: border-color .18s ease, box-shadow .18s ease, transform .18s var(--ease); }
   input:focus, select:focus, textarea:focus { transform: translateY(-1px); }
 }
+
+
+/* =========================================================
+   Fourth pass: Claude color + motion round
+   ========================================================= */
+
+:root {
+  --brass-hi: #e6bf66;  --brass-lo: #8a6419;
+  --verdigris: #3d8f7b; --leaf: #5a8f46; --oxblood: #8e3b32;
+  --paper: #f7f1e4;     --card: #fffcf4;   --border: #e6dcc4;
+  --foil: linear-gradient(in oklab 135deg, var(--brass-lo), var(--brass) 30%, var(--brass-hi) 50%, var(--brass) 70%, var(--brass-lo));
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  :root { --spring: linear(0, .22 6%, .62 13%, .96 21%, 1.09 28%, 1.12 33%, 1.08 40%, 1.02 50%, .99 62%, 1 78%, 1); }
+}
+
+/* paper grain: static, composited once, no repaint */
+body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .045; mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* oklab interpolation = no muddy grey mid-tones in the green gradient */
+header.site-header { background: linear-gradient(in oklab 120deg, #12281f 0%, var(--ink-2) 55%, #2d6153 100%); }
+
+/* brass hairline + top highlight on dark surfaces */
+.hero { box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,.14), inset 0 0 0 1px rgba(230,191,102,.2); }
+
+nav.main-nav a.active, nav.main-nav a[aria-current="page"],
+.hero .btn:not(.secondary), .hero .btn:not(.secondary):hover {
+  background: var(--foil); border-color: var(--brass-lo); color: #1a2a22;
+}
+h2::before, .brand::before { background: var(--foil); }
+h2::before { width: 22px; }
+
+.stat { --tone: var(--brass); position: relative; border-top-color: var(--tone);
+  background:
+    radial-gradient(120% 90% at 100% 0, color-mix(in oklab, var(--tone) 16%, transparent), transparent 60%),
+    linear-gradient(180deg, #fff, var(--card)); }
+.grid > .stat:nth-child(4n+2) { --tone: var(--verdigris); }
+.grid > .stat:nth-child(4n+3) { --tone: var(--leaf); }
+.grid > .stat:nth-child(4n+4) { --tone: var(--oxblood); }  /* reorder so oxblood lands on "overdue" */
+.stat .lbl::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px;
+  border-radius: 50%; background: var(--tone); vertical-align: 1px; }
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .grid .card, .stat { position: relative; isolation: isolate; overflow: hidden; }
+  .grid .card::after, .stat::after {
+    content: ""; position: absolute; left: 0; top: 0; width: 340px; height: 340px; margin: -170px 0 0 -170px;
+    border-radius: 50%; z-index: -1; pointer-events: none; opacity: 0; will-change: transform, opacity;
+    background: radial-gradient(closest-side, rgba(230,191,102,.30), transparent);
+    transform: translate3d(var(--mx, 0px), var(--my, 0px), 0);
+    transition: opacity .3s var(--ease);
+  }
+  .grid .card:hover::after, .stat:hover::after { opacity: 1; }
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    body::before { content: ""; position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 60;
+      background: var(--foil); transform-origin: 0 50%; transform: scaleX(0);
+      animation: read-progress linear both; animation-timeline: scroll(root block); }
+    @keyframes read-progress { to { transform: scaleX(1); } }
+
+    header.site-header::after { content: ""; position: absolute; inset: auto 0 -16px; height: 16px; pointer-events: none;
+      background: linear-gradient(rgba(22,48,43,.25), transparent); opacity: 0;
+      animation: header-elevate linear both; animation-timeline: scroll(root block); animation-range: 0 120px; }
+    @keyframes header-elevate { to { opacity: 1; } }
+
+    .hero::after { inset: -60px 0; animation: hero-drift linear both;
+      animation-timeline: view(); animation-range: cover 0% cover 100%; }
+    @keyframes hero-drift { from { transform: translateY(-28px); } to { transform: translateY(28px); } }
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  header.site-header { view-transition-name: site-header; }
+  main { view-transition-name: page; }
+  nav.main-nav a.active, nav.main-nav a[aria-current="page"] { view-transition-name: nav-pill; }
+
+  ::view-transition-group(site-header) { animation-duration: 0s; }
+  ::view-transition-group(nav-pill) { animation-duration: .45s; animation-timing-function: var(--spring); }
+  ::view-transition-old(page) { animation: vt-out .14s ease-in both; }
+  ::view-transition-new(page) { animation: vt-in .3s var(--ease) .04s both; }
+  @keyframes vt-out { to { opacity: 0; } }
+  @keyframes vt-in  { from { opacity: 0; } }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .notice { animation: notice-in .5s var(--ease) backwards; }
+  .notice::before { animation: pop .6s var(--spring) .15s backwards; }
+  @keyframes notice-in { from { opacity: 0; transform: translateY(-8px); } }
+  @keyframes pop { from { transform: scale(0); } }
+
+  .swap-in { animation: swap-in .38s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 8) * 40ms); }
+  @keyframes swap-in { from { opacity: 0; transform: translateY(10px) scale(.985); } }
+}
+
