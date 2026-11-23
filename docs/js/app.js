@@ -447,3 +447,23 @@ function renderLoginPage() {
       `<div class="notice ok">Account created for ${esc(name)} (${esc(email)}). Go to your <a href="member.html">member dashboard</a>.</div>`;
   });
 }
+
+/* Label table cells for the stacked mobile layout and preserve table
+   semantics when display changes on small screens. */
+(function () {
+  const label = t => {
+    const heads = [...t.querySelectorAll("thead th")].map(x => x.textContent.trim());
+    t.setAttribute("role", "table");
+    t.querySelectorAll("thead th").forEach(h => h.setAttribute("role", "columnheader"));
+    t.querySelectorAll("tbody tr").forEach(r => {
+      r.setAttribute("role", "row");
+      [...r.children].forEach((c, i) => {
+        c.setAttribute("data-label", heads[i] || "");
+        c.setAttribute("role", "cell");
+      });
+    });
+  };
+  const run = () => document.querySelectorAll("table").forEach(label);
+  run();
+  document.querySelectorAll("table").forEach(t => new MutationObserver(run).observe(t, { childList: true, subtree: true }));
+})();

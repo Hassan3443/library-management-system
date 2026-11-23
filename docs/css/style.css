@@ -194,3 +194,177 @@ tbody tr:hover .book-cover { transform: scale(1.06) rotate(-2deg); box-shadow: v
 .grid .card p { color: var(--text); }
 
 tbody td .btn.small { white-space: nowrap; }
+
+
+/* =========================================================
+   Third pass: refinements suggested by Claude review
+   ========================================================= */
+
+/* =========================================================
+   1. TOKENS: AA-safe colours, easing, fluid type
+   (verify the ratios with your checker; these are my estimates)
+   ========================================================= */
+:root {
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --muted: #5b6a63;                 /* was ~4.1:1 on paper, now ≥4.5:1 */
+  --ok: #24663f; --info: #27616a; --warn: #8a5d0a; --danger: #a63a2a;
+  --fs-h1: clamp(1.6rem, 1.15rem + 1.7vw, 2.1rem);
+}
+html { scrollbar-gutter: stable; }
+body {
+  min-height: 100dvh; display: flex; flex-direction: column;
+  background: radial-gradient(1100px 420px at 50% -180px, rgba(185,136,47,.12), transparent 70%), var(--paper);
+}
+main { flex: 1; width: 100%; }
+h1, h2, .hero h1 { font-optical-sizing: auto; text-wrap: balance; }
+p, .subtitle, li { text-wrap: pretty; }
+h1 { font-size: var(--fs-h1); }
+.subtitle { font-size: 1.0625rem; line-height: 1.55; }
+[hidden] { display: none !important; }
+::placeholder { color: #75827b; }
+
+/* =========================================================
+   2. FOCUS: visible on light AND dark surfaces (≥3:1)
+   ========================================================= */
+.btn:focus-visible, a:focus-visible, button:focus-visible,
+input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--ink); outline-offset: 3px;
+  box-shadow: 0 0 0 5px rgba(185,136,47,.45);
+}
+.site-header :focus-visible, .hero :focus-visible { outline-color: #fff; }
+
+input:focus, select:focus { border-color: var(--ink-2); box-shadow: 0 0 0 4px rgba(185,136,47,.3); }
+
+/* =========================================================
+   3. HEADER / NAV: aria-current support, hover polish,
+      single-row scrollable nav on mobile
+   ========================================================= */
+nav.main-nav a[aria-current="page"] { background: var(--brass); color: var(--ink); font-weight: 600;
+  box-shadow: 0 2px 8px rgba(185,136,47,.35); }
+nav.main-nav a:not(.active):not([aria-current]):hover { transform: translateY(-1px); }
+.brand::before { transition: transform .25s var(--ease); }
+.brand:hover::before { transform: translateY(-2px) rotate(-8deg); }
+@media (max-width: 860px) {
+  nav.main-nav { flex-wrap: nowrap; overflow-x: auto; width: 100%; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 90%, transparent); mask-image: linear-gradient(90deg, #000 90%, transparent); }
+  nav.main-nav::-webkit-scrollbar { display: none; }
+  nav.main-nav a { white-space: nowrap; }
+}
+
+/* =========================================================
+   4. HERO: book-spine motif (pure CSS), content above overlays
+   ========================================================= */
+.hero > * { position: relative; z-index: 1; }
+.hero::before { content: ""; position: absolute; right: 48px; bottom: 0; width: 150px; height: 200px; pointer-events: none;
+  background:
+    linear-gradient(180deg, #d8a84a, var(--brass-dark)) 0 100% / 28px 120px no-repeat,
+    linear-gradient(180deg, #3a7767, #24493f)           36px 100% / 32px 170px no-repeat,
+    linear-gradient(180deg, #f0e4c6, #cdbd94)           76px 100% / 24px 140px no-repeat,
+    linear-gradient(180deg, #2c5f53, #1b3c35)          108px 100% / 34px 190px no-repeat;
+  opacity: .85; }
+@media (max-width: 860px) { .hero::before { display: none; } }
+
+/* =========================================================
+
+   5. CARDS: calm by default, only *interactive* cards lift
+   ========================================================= */
+.grid .card:hover { transform: none; box-shadow: var(--shadow-sm); }
+.card { position: relative; }
+.grid .card:has(a[href], .btn)::before {
+  content: ""; position: absolute; inset: -1px -1px auto; height: 3px; border-radius: 14px 14px 0 0;
+  background: linear-gradient(90deg, var(--brass), transparent);
+  transform: scaleX(0); transform-origin: left; transition: transform .35s var(--ease); }
+.grid .card:has(a[href], .btn):hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.grid .card:has(a[href], .btn):hover::before { transform: scaleX(1); }
+
+/* =========================================================
+   6. STATS: stronger numeric hierarchy
+   ========================================================= */
+.stat { background: linear-gradient(180deg, #fff, var(--card)); }
+.stat .num { font-size: clamp(28px, 2.4vw + 12px, 40px); letter-spacing: -.02em; }
+.stat .lbl { margin-top: 6px; }
+
+/* =========================================================
+   7. TABLES: row marker, no-wrap headers, stacked on phones
+      (needs the 10-line JS below for data-label)
+   ========================================================= */
+th { white-space: nowrap; }
+tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 var(--brass); }
+@media (max-width: 640px) {
+  table, tbody, tr, td { display: block; }
+  thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  tr { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 6px 14px; margin-bottom: 12px; }
+  td { display: flex; justify-content: space-between; align-items: center; gap: 16px; text-align: right;
+       border: 0; border-bottom: 1px dashed var(--border); padding: 9px 0; }
+  tr td:last-child { border-bottom: 0; }
+  td::before { content: attr(data-label); text-align: left; font-size: 11px; font-weight: 700;
+
+    text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  td[data-label=""]::before, td:not([data-label])::before { display: none; }
+}
+
+/* =========================================================
+   8. EMPTY STATES: automatic + explicit class
+   ========================================================= */
+.empty-state, .grid:empty::before, tbody:empty::before {
+  display: block; grid-column: 1 / -1; text-align: center; padding: 44px 20px; color: var(--muted);
+  border: 1.5px dashed var(--border); border-radius: 14px;
+  background: repeating-linear-gradient(135deg, transparent 0 10px, rgba(185,136,47,.05) 10px 11px); }
+.empty-state strong { display: block; font: 600 18px var(--font-display); color: var(--ink); margin-bottom: 4px; }
+.grid:empty::before { content: "Nothing to show yet."; }
+tbody:empty { display: block; }
+tbody:empty::before { content: "No records to display."; }
+
+/* =========================================================
+   9. FORMS: touch size, search icon, select chevron,
+      validation, required marker
+   ========================================================= */
+input[type=text], input[type=email], input[type=password], input[type=date], input[type=number], select { min-height: 44px; }
+input[placeholder*="search" i], input[type=search] { padding-left: 40px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%236b7a73' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='m14 14 4 4'/%3E%3C/svg%3E") no-repeat 13px center / 17px; }
+select { appearance: none; padding-right: 38px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%2316302b' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='m2 4 4 4 4-4'/%3E%3C/svg%3E") no-repeat right 13px center / 12px; }
+input:user-invalid, select:user-invalid { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(166,58,42,.15); }
+input:disabled, select:disabled { background: #f1ede2; color: var(--muted); cursor: not-allowed; }
+input[type=checkbox], input[type=radio] { accent-color: var(--ink); }
+label:has(+ :required)::after { content: " *"; color: var(--danger); }   /* drop if labels already have * */
+
+/* =========================================================
+   10. BUTTONS & BADGES: depth, loading state, status dots
+
+   ========================================================= */
+.btn { background-image: linear-gradient(180deg, rgba(255,255,255,.1), transparent); position: relative; }
+.btn[aria-busy="true"] { color: transparent; pointer-events: none; }
+.btn[aria-busy="true"]::after { content: ""; position: absolute; inset: 0; margin: auto; width: 16px; height: 16px;
+  border: 2px solid #fff; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.badge { display: inline-flex; align-items: center; gap: 6px; }
+.badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.badge.muted { color: #52605a; }
+
+/* =========================================================
+   11. NOTICES: icon without breaking inline flow
+   ========================================================= */
+.notice { position: relative; padding-left: 50px; }
+.notice::before { content: "!"; position: absolute; left: 16px; top: 13px; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--warn); color: #fff; font: 700 13px/22px var(--font-body); text-align: center; }
+.notice.ok::before { content: "✓"; background: var(--ok); }
+
+/* =========================================================
+   12. MOTION: cross-page view transitions + page entrance
+       (progressive enhancement; reduced-motion safe)
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .22s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } }
+  main > * { animation: rise .45s var(--ease) backwards; }   /* top-level only: live-search re-renders won't re-animate */
+  main > *:nth-child(2) { animation-delay: .06s; }
+  main > *:nth-child(3) { animation-delay: .12s; }
+  main > *:nth-child(n+4) { animation-delay: .18s; }
+}
+
+
+/* Touch targets + print */
+@media (pointer: coarse) { .btn.small { min-height: 40px; } nav.main-nav a { padding: 10px 14px; } }
+@media print { header.site-header, footer.site-footer, .btn, .skip-link { display: none; } body { background: #fff; } }
