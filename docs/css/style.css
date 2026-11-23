@@ -155,3 +155,9 @@ footer.site-footer::before { content: ""; display: block; width: 60px; height: 2
   form.inline .field { min-width: 140px; }
   main { padding: 0 14px; margin: 24px auto; }
 }
+
+/* Hero button contrast on the dark banner */
+.hero .btn { background: var(--brass); border-color: var(--brass); color: var(--ink); }
+.hero .btn:hover { background: var(--brass-dark); border-color: var(--brass-dark); color: #fff; }
+.hero .btn.secondary { background: transparent; border-color: rgba(255, 255, 255, .65); color: #fff; }
+.hero .btn.secondary:hover { background: rgba(255, 255, 255, .14); color: #fff; }
