@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Library - Login / Register</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">City<span>Library</span></a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="catalog.html">Book Catalog</a>
+        <a href="member.html">Member Dashboard</a>
+        <a href="history.html">Borrowing History</a>
+        <a href="return.html">Return Book</a>
+        <a href="librarian.html">Librarian Dashboard</a>
+        <a href="login.html" class="active">Login</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>Member Access</h1>
+    <p class="subtitle">Register as a new member or log in to your account (FR-01, FR-02). Demo: no real authentication, any values work.</p>
+    <div class="grid cols-3" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
+      <div class="card">
+        <h2 style="margin-top:0">Log in (FR-02)</h2>
+        <form id="login-form">
+          <label for="lemail">Email</label>
+          <input type="email" id="lemail" required placeholder="you@example.com" style="margin-bottom:12px">
+          <label for="lpass">Password</label>
+          <input type="password" id="lpass" required placeholder="Password" style="margin-bottom:16px">
+          <button class="btn" type="submit">Log in</button>
+        </form>
+        <div id="login-msg" style="margin-top:12px"></div>
+      </div>
+      <div class="card">
+        <h2 style="margin-top:0">Register (FR-01)</h2>
+        <form id="register-form">
+          <label for="rname">Full name</label>
+          <input type="text" id="rname" required placeholder="Your name" style="margin-bottom:12px">
+          <label for="remail">Email</label>
+          <input type="email" id="remail" required placeholder="you@example.com" style="margin-bottom:12px">
+          <label for="rpass">Password</label>
+          <input type="password" id="rpass" required placeholder="Choose a password" style="margin-bottom:16px">
+          <button class="btn" type="submit">Create account</button>
+        </form>
+        <div id="register-msg" style="margin-top:12px"></div>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer">Library Management System - SA1</footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>renderLoginPage();</script>
+</body>
+</html>

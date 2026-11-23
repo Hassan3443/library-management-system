@@ -17,6 +17,7 @@
         <a href="history.html">Borrowing History</a>
         <a href="return.html">Return Book</a>
         <a href="librarian.html" class="active">Librarian Dashboard</a>
+        <a href="login.html">Login</a>
       </nav>
     </div>
   </header>
@@ -53,10 +54,18 @@
       </form>
     </div>
 
+    <h2>Manage catalog (FR-12, FR-13)</h2>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Copies (avail/total)</th><th>Actions</th></tr></thead>
+        <tbody id="catalog-table"></tbody>
+      </table>
+    </div>
+
     <h2>Members (FR-17)</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
-        <thead><tr><th>Member</th><th>Email</th><th>Active loans</th><th>Unpaid fines</th><th>Status</th></tr></thead>
+        <thead><tr><th>Member</th><th>Email</th><th>Active loans</th><th>Unpaid fines</th><th>Status</th><th>Action</th></tr></thead>
         <tbody id="members"></tbody>
       </table>
     </div>
