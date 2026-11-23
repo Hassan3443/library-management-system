@@ -144,7 +144,6 @@ footer.site-footer::before { content: ""; display: block; width: 60px; height: 2
 
 /* Responsive layout for small screens */
 @media (max-width: 860px) {
-  header.site-header { position: static; }
   .nav-wrap { min-height: 0; flex-wrap: wrap; padding: 12px 16px; gap: 8px; }
   nav.main-nav { margin-left: 0; gap: 4px 8px; }
   .grid.cols-2, .grid.cols-3, .grid.cols-4 { grid-template-columns: 1fr; }
@@ -738,3 +737,51 @@ h2 { font-weight: 600; letter-spacing: -.025em; }
 .btn { letter-spacing: 0; }
 label, th, .lbl, .feat-role { letter-spacing: .06em; }       /* slightly tighter than Inter's .07-.08 */
 kbd, .fr { font-family: var(--font-mono); }
+
+/* =========================================================
+   Sixth pass: mobile layout fixes + Vercel/GitHub-inspired
+   touch ergonomics (sticky header, list-card book rows)
+   ========================================================= */
+
+/* Sticky glass header at EVERY width (was desktop-only blur,
+   and un-stuck under 860px which made content clip under it) */
+@media (max-width: 860px) {
+  header.site-header {
+    position: sticky; top: 0;
+    background: rgba(11,16,32,.9);
+    -webkit-backdrop-filter: saturate(160%) blur(14px);
+    backdrop-filter: saturate(160%) blur(14px);
+  }
+  .nav-wrap { gap: 6px 16px; padding: 10px 16px; }
+  main { margin-top: 22px; }
+}
+
+/* Mobile book rows -> compact list cards (GitHub list pattern):
+   small cover pinned left, title block above the meta rows */
+@media (max-width: 640px) {
+  tbody tr { position: relative; padding: 12px 14px 6px 72px; }
+  tbody td:has(.book-cover) {
+    position: absolute; left: 14px; top: 14px;
+    display: block; padding: 0; border: 0;
+  }
+  td:has(.book-cover) .book-cover { width: 42px; height: 56px; font-size: 17px; }
+  tbody td:has(.book-title) {
+    display: block; text-align: left; gap: 0;
+    padding: 1px 0 9px; border-bottom: 1px dashed var(--border);
+  }
+  td:has(.book-title)::before { display: block; margin-bottom: 3px; }
+  td:has(.book-title) .book-meta { margin-top: 2px; }
+  tbody td:has(.btn) { justify-content: flex-end; }
+  .hero { padding: 30px 22px; border-radius: 14px; margin-bottom: 26px; }
+  .hero h1 { font-size: 26px; }
+  .hero p { font-size: 14.5px; margin-bottom: 20px; }
+}
+
+/* Touch ergonomics (Vercel web interface guidelines) */
+a, .btn, button, summary { touch-action: manipulation; }
+body { -webkit-tap-highlight-color: transparent; }
+@media (max-width: 640px) {
+  /* >=16px inputs stop iOS auto-zoom on focus */
+  input[type=text], input[type=email], input[type=password],
+  input[type=date], input[type=number], select { font-size: 16px; }
+}
