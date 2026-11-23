@@ -759,7 +759,7 @@ kbd, .fr { font-family: var(--font-mono); }
 /* Mobile book rows -> compact list cards (GitHub list pattern):
    small cover pinned left, title block above the meta rows */
 @media (max-width: 640px) {
-  tbody tr { position: relative; padding: 12px 14px 6px 72px; }
+  tbody:has(.book-cover) tr { position: relative; padding: 12px 14px 6px 72px; }
   tbody td:has(.book-cover) {
     position: absolute; left: 14px; top: 14px;
     display: block; padding: 0; border: 0;
@@ -769,7 +769,7 @@ kbd, .fr { font-family: var(--font-mono); }
     display: block; text-align: left; gap: 0;
     padding: 1px 0 9px; border-bottom: 1px dashed var(--border);
   }
-  td:has(.book-title)::before { display: block; margin-bottom: 3px; }
+  td:has(.book-title)::before { display: none; }  /* primary line: no visible label */
   td:has(.book-title) .book-meta { margin-top: 2px; }
   tbody td:has(.btn) { justify-content: flex-end; }
   .hero { padding: 30px 22px; border-radius: 14px; margin-bottom: 26px; }
