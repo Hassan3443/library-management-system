@@ -546,3 +546,11 @@ function renderLoginPage() {
     });
   }).observe(document.querySelector('main') || document.body, { childList: true, subtree: true });
 })();
+
+/* Press "/" anywhere to jump to the catalog search field. */
+addEventListener('keydown', function (e) {
+  if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.target.closest && e.target.closest('input,textarea,select,[contenteditable]')) return;
+  var s = document.getElementById('q');
+  if (s) { e.preventDefault(); s.focus(); s.select(); }
+});

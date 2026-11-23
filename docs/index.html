@@ -9,8 +9,8 @@
   <title>City Library - Home</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=Inter:wght@400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=7">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -40,35 +40,54 @@
     <section class="grid cols-4" id="stats"></section>
 
     <h2>What you can do</h2>
-    <section class="grid cols-3">
-      <div class="card">
-        <h3>Search and discover</h3>
-        <p>Find books by title, author or category, and see the live availability of every copy before you make a request. (FR-03, FR-04)</p>
-      </div>
-      <div class="card">
-        <h3>Borrow and return</h3>
-        <p>Submit borrow requests, follow their approval, and return books when you are done. Loans run for 14 days. (FR-05, FR-08, FR-14, FR-15)</p>
-      </div>
-      <div class="card">
-        <h3>Stay on top of due dates</h3>
-        <p>Your dashboard shows current loans, due dates, overdue notices and any fines, at 5 EGP per overdue day. (FR-06, FR-10, FR-11, FR-16)</p>
-      </div>
-      <div class="card">
-        <h3>Reserve popular books</h3>
-        <p>If every copy is on loan, join the reservation queue and get notified when a copy comes back. (FR-09, FR-18)</p>
-      </div>
-      <div class="card">
-        <h3>Track your history</h3>
-        <p>Your full borrowing history stays available, including return dates and fines from late returns. (FR-07)</p>
-      </div>
-      <div class="card">
-        <h3>Librarian tools</h3>
-        <p>Librarians manage the catalog, copies, borrow requests, returns, overdue fines, members and reservation queues. (FR-12 to FR-18)</p>
-      </div>
-    </section>
+    <ol class="feat-list" role="list">
+      <li class="feat-row">
+        <div class="feat-meta"><span class="feat-role">Everyone</span></div>
+        <div class="feat-body">
+          <h3>Find any book as you type</h3>
+          <p>Find books by title, author or category, and see the live availability of every copy before you make a request. <span class="fr">(FR-03, FR-04)</span></p>
+        </div>
+        <div class="feat-aside" aria-hidden="true"><span>Search title or author</span><kbd>/</kbd></div>
+      </li>
+      <li class="feat-row">
+        <div class="feat-meta"><span class="feat-role">Members</span></div>
+        <div class="feat-body">
+          <h3>Borrow and return</h3>
+          <p>Submit borrow requests, follow their approval, and return books when you are done. Loans run for 14 days. <span class="fr">(FR-05, FR-08, FR-14, FR-15)</span></p>
+        </div>
+      </li>
+      <li class="feat-row">
+        <div class="feat-meta"><span class="feat-role">Members</span></div>
+        <div class="feat-body">
+          <h3>Stay on top of due dates</h3>
+          <p>Your dashboard shows current loans, due dates, overdue notices and any fines, at 5 EGP per overdue day. <span class="fr">(FR-06, FR-10, FR-11, FR-16)</span></p>
+        </div>
+      </li>
+      <li class="feat-row">
+        <div class="feat-meta"><span class="feat-role">Members</span></div>
+        <div class="feat-body">
+          <h3>Reserve popular books</h3>
+          <p>If every copy is on loan, join the reservation queue and get notified when a copy comes back. <span class="fr">(FR-09, FR-18)</span></p>
+        </div>
+      </li>
+      <li class="feat-row">
+        <div class="feat-meta"><span class="feat-role">Members</span></div>
+        <div class="feat-body">
+          <h3>Track your history</h3>
+          <p>Your full borrowing history stays available, including return dates and fines from late returns. <span class="fr">(FR-07)</span></p>
+        </div>
+      </li>
+      <li class="feat-row">
+        <div class="feat-meta"><span class="feat-role">Librarians</span></div>
+        <div class="feat-body">
+          <h3>Run the library from one dashboard</h3>
+          <p>Librarians manage the catalog, copies, borrow requests, returns, overdue fines, members and reservation queues. <span class="fr">(FR-12 to FR-18)</span></p>
+        </div>
+      </li>
+    </ol>
   </main>
   <footer class="site-footer">Library Management System - Information Systems Analysis and Design 1 (SA1)</footer>
-  <script src="js/data.js?v=7"></script>
+  <script src="js/data.js?v=8"></script>
   <script>
     const activeLoans = LOANS.filter(l => !l.returnDate).length;
     const overdue = LOANS.filter(l => !l.returnDate && l.status === "overdue").length;
