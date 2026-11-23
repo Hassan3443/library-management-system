@@ -493,7 +493,6 @@ h2::before { width: 22px; }
   }
   .grid .card:hover::after, .stat:hover::after { opacity: 1; }
 }
-
 
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: scroll()) {
@@ -535,7 +534,6 @@ h2::before { width: 22px; }
   .swap-in { animation: swap-in .38s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 8) * 40ms); }
   @keyframes swap-in { from { opacity: 0; transform: translateY(10px) scale(.985); } }
 }
-
 
 
 /* =========================================================
