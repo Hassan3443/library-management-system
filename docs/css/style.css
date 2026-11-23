@@ -374,3 +374,67 @@ label:has(+ :required)::after { content: " *"; color: var(--danger); }   /* drop
   form.inline .field { min-width: 0; flex: 1 1 calc(50% - 6px); }
   form.inline .field:first-child { flex: 1 1 100%; }
 }
+
+/* =========================================================
+   Liveliness pass: motion and micro-interactions
+   Everything motion-related is gated on no-preference;
+   JS enhancements bail out under reduced motion too.
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+
+  /* Hero: slow gradient drift + bobbing book spines + load shine */
+  .hero { background-size: 165% 165%; animation: heroDrift 16s ease-in-out infinite alternate; }
+  @keyframes heroDrift { from { background-position: 0% 45%; } to { background-position: 100% 55%; } }
+  .hero::before { animation: spineBob 6s ease-in-out infinite; }
+  @keyframes spineBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+  /* Nav links: underline slides in on hover */
+  nav.main-nav a { position: relative; }
+  nav.main-nav a::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 7px; height: 2px;
+    border-radius: 2px; background: var(--brass); transform: scaleX(0); transform-origin: left;
+    transition: transform .28s var(--ease); }
+  nav.main-nav a:hover::after { transform: scaleX(1); }
+
+  /* Buttons: shine sweep + lift on hover */
+  .btn { position: relative; overflow: hidden; transition: transform .2s var(--ease), box-shadow .2s var(--ease),
+    background-color .2s var(--ease), border-color .2s var(--ease), color .2s var(--ease); }
+  .btn::after { content: ""; position: absolute; top: -10%; bottom: -10%; left: -90%; width: 55%;
+    background: linear-gradient(105deg, transparent, rgba(255, 255, 255, .38), transparent);
+    transform: skewX(-20deg); transition: left .55s var(--ease); pointer-events: none; }
+  .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .btn:hover::after { left: 140%; }
+  .btn:active { transform: translateY(0) scale(.97); }
+
+  /* Cards lift; book covers get springier */
+  .grid .card, main > .card { transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease); }
+  .grid .card:hover, main > .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .book-cover { transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s var(--ease); }
+  tbody tr:hover .book-cover { transform: scale(1.12) rotate(-4deg) translateY(-2px); box-shadow: var(--shadow-md); }
+
+  /* Stat cards pop in (they are injected after load, so this plays on insert) */
+  .stat { animation: statPop .5s var(--ease) backwards; }
+  .stat:nth-child(2) { animation-delay: .07s; }
+  .stat:nth-child(3) { animation-delay: .14s; }
+  .stat:nth-child(4) { animation-delay: .21s; }
+  @keyframes statPop { from { opacity: 0; transform: translateY(10px) scale(.96); } }
+
+  /* Available badges: the status dot pulses */
+  .badge.ok::before { animation: dotPulse 2.4s ease-out infinite; }
+  @keyframes dotPulse {
+    0% { box-shadow: 0 0 0 0 rgba(38, 122, 82, .45); }
+    70% { box-shadow: 0 0 0 6px rgba(38, 122, 82, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(38, 122, 82, 0); }
+  }
+
+  /* Table rows stagger in on first render (JS adds the class + delay) */
+  tbody tr.row-in { animation: rowIn .38s var(--ease) backwards; }
+  @keyframes rowIn { from { opacity: 0; transform: translateX(-10px); } }
+
+  /* Scroll reveal (JS adds .rv, then .in when visible) */
+  .rv { opacity: 0; transform: translateY(16px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+
+  /* Inputs: subtle grow on focus */
+  input, select, textarea { transition: border-color .18s ease, box-shadow .18s ease, transform .18s var(--ease); }
+  input:focus, select:focus, textarea:focus { transform: translateY(-1px); }
+}

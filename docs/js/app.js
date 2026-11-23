@@ -467,3 +467,55 @@ function renderLoginPage() {
   run();
   document.querySelectorAll("table").forEach(t => new MutationObserver(run).observe(t, { childList: true, subtree: true }));
 })();
+
+/* Liveliness: count-up stats, scroll reveal, first-render row stagger.
+   Skipped entirely when the user prefers reduced motion. */
+(function () {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  var easeOut = function (t) { return 1 - Math.pow(1 - t, 3); };
+  function countUp(el) {
+    var target = parseInt(el.textContent.replace(/[^\d-]/g, ""), 10);
+    if (isNaN(target)) return;
+    var t0 = performance.now(), dur = 750;
+    requestAnimationFrame(function tick(now) {
+      var p = Math.min(1, (now - t0) / dur);
+      el.textContent = Math.round(target * easeOut(p));
+      if (p < 1) requestAnimationFrame(tick);
+    });
+  }
+  var counted = new WeakSet();
+  function scanStats(root) {
+    root.querySelectorAll(".stat .num").forEach(function (el) {
+      if (!counted.has(el)) { counted.add(el); countUp(el); }
+    });
+  }
+  scanStats(document);
+  new MutationObserver(function (muts) {
+    muts.forEach(function (m) {
+      m.addedNodes.forEach(function (n) { if (n.nodeType === 1 && n.querySelectorAll) scanStats(n); });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    });
+  }, { threshold: .12 });
+  document.querySelectorAll(".grid > *").forEach(function (el, i) {
+    el.classList.add("rv");
+    el.style.transitionDelay = (i % 6) * 55 + "ms";
+    io.observe(el);
+  });
+
+  new MutationObserver(function () {
+    document.querySelectorAll("tbody").forEach(function (tb) {
+      if (tb.dataset.staggered || !tb.rows.length) return;
+      tb.dataset.staggered = "1";
+      Array.prototype.slice.call(tb.rows, 0, 12).forEach(function (r, i) {
+        r.classList.add("row-in");
+        r.style.animationDelay = i * 45 + "ms";
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
+})();
