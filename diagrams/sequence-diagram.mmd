@@ -1,0 +1,42 @@
+sequenceDiagram
+    actor M as Member
+    participant FE as Front End
+    participant S as Library System
+    participant DB as Data Store
+    actor L as Librarian
+
+    M->>FE: Search books (title/author/category)
+    FE->>S: searchBooks(criteria)
+    S->>DB: query matching books
+    DB-->>S: book list with copy availability
+    S-->>FE: search results
+    FE-->>M: show results with availability
+
+    M->>FE: Select book, submit borrow request
+    FE->>S: requestBorrow(memberId, bookId)
+    S->>DB: check member eligibility (fines, active loans)
+    DB-->>S: member status
+    S->>DB: create borrow request (Pending)
+    S-->>L: new request notification
+
+    L->>S: review and confirm request
+    S->>DB: record loan (borrowDate, dueDate = +14 days)
+    S->>DB: set copy status = On Loan
+    S-->>FE: loan confirmed
+    FE-->>M: show loan with due date
+
+    Note over M,L: Later, when the book is returned
+    M->>L: return the book
+    L->>S: processReturn(loanId)
+    S->>DB: set returnDate, copy status = Available
+    alt returnDate is after dueDate
+        S->>S: calculateFine(daysOverdue x 5 EGP)
+        S->>DB: create Fine for member
+        S-->>L: fine recorded
+    else on time
+        S-->>L: return completed, no fine
+    end
+    S->>DB: check reservation queue
+    opt reservation queue not empty
+        S-->>M: notify next member copy is available
+    end

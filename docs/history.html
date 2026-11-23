@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Library - Borrowing History</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">City<span>Library</span></a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="catalog.html">Book Catalog</a>
+        <a href="member.html">Member Dashboard</a>
+        <a href="history.html" class="active">Borrowing History</a>
+        <a href="return.html">Return Book</a>
+        <a href="librarian.html">Librarian Dashboard</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>Borrowing History</h1>
+    <p class="subtitle">Every loan, with return dates and fines for late returns (FR-07).</p>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th>Loan</th><th>Book</th><th>Borrowed</th><th>Due</th><th>Returned</th><th>Status</th><th>Fine</th></tr></thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="site-footer">Library Management System - SA1</footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>renderHistory();</script>
+</body>
+</html>

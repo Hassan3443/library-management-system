@@ -1,0 +1,79 @@
+classDiagram
+    class Book {
+        +int bookId
+        +string title
+        +string author
+        +string category
+        +string isbn
+        +int publicationYear
+        +addCopy(BookCopy)
+        +getAvailableCopies() int
+        +updateDetails()
+    }
+    class BookCopy {
+        +int copyId
+        +CopyStatus status
+        +string location
+        +markAvailable()
+        +markOnLoan()
+        +markReserved()
+    }
+    class Member {
+        +int memberId
+        +string name
+        +string email
+        +date joinDate
+        +bool isActive
+        +searchBooks(criteria) List
+        +requestBorrow(Book) Loan
+        +reserve(Book) Reservation
+        +viewHistory() List
+        +viewFines() List
+    }
+    class Librarian {
+        +int librarianId
+        +string name
+        +string email
+        +addBook(Book)
+        +updateBook(Book)
+        +removeBook(int bookId)
+        +confirmBorrowRequest(Loan)
+        +processReturn(Loan)
+        +calculateFine(Loan) Fine
+        +suspendMember(Member)
+    }
+    class Loan {
+        +int loanId
+        +date borrowDate
+        +date dueDate
+        +date returnDate
+        +LoanStatus status
+        +isOverdue() bool
+        +daysOverdue() int
+        +close()
+    }
+    class Fine {
+        +int fineId
+        +float amount
+        +int overdueDays
+        +bool isPaid
+        +calculate() float
+        +markPaid()
+    }
+    class Reservation {
+        +int reservationId
+        +date reservationDate
+        +int queuePosition
+        +ReservationStatus status
+        +notifyMember()
+        +cancel()
+    }
+
+    Book "1" *-- "1..*" BookCopy : has copies
+    Member "1" -- "0..*" Loan : borrows
+    Librarian "1" -- "0..*" Loan : confirms and processes
+    BookCopy "1" -- "0..1" Loan : lent in
+    Loan "1" -- "0..1" Fine : may incur
+    Member "1" -- "0..*" Fine : owes
+    Member "1" -- "0..*" Reservation : places
+    Book "1" -- "0..*" Reservation : reserved for

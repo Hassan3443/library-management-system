@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Library - Return Book</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">City<span>Library</span></a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="catalog.html">Book Catalog</a>
+        <a href="member.html">Member Dashboard</a>
+        <a href="history.html">Borrowing History</a>
+        <a href="return.html" class="active">Return Book</a>
+        <a href="librarian.html">Librarian Dashboard</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>Return a Book</h1>
+    <p class="subtitle">Pick one of your active loans to return. The system checks the due date and calculates any fine (FR-08, FR-15, FR-16).</p>
+    <div id="notice"></div>
+    <div class="card">
+      <form class="inline" onsubmit="return false;">
+        <div class="field">
+          <label for="loan">Active loan</label>
+          <select id="loan"></select>
+        </div>
+        <div class="field" style="max-width:220px">
+          <label for="rdate">Return date</label>
+          <input type="date" id="rdate">
+        </div>
+        <button class="btn" id="calc">Check return</button>
+      </form>
+    </div>
+    <div id="result"></div>
+  </main>
+  <footer class="site-footer">Library Management System - SA1</footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>renderReturnPage();</script>
+</body>
+</html>

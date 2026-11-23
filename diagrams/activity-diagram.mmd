@@ -1,0 +1,29 @@
+flowchart TD
+    Start([Start]) --> A[Member searches for a book]
+    A --> B[View book details and availability]
+    B --> C{Copies available?}
+    C -- No --> D[Member places a reservation]
+    D --> E[Member added to reservation queue]
+    E --> Z([End])
+    C -- Yes --> F[Member submits borrow request]
+    F --> G{Member eligible?<br/>No unpaid fines,<br/>under 3 active loans}
+    G -- No --> H[Request rejected with reason]
+    H --> Z
+    G -- Yes --> I[Librarian reviews the request]
+    I --> J{Librarian confirms?}
+    J -- No --> H
+    J -- Yes --> K[System records loan:<br/>borrow date and due date]
+    K --> L[Copy marked On Loan]
+    L --> M[Member borrows the book]
+    M --> N[Member initiates return]
+    N --> O[Librarian processes the return]
+    O --> P{Returned after due date?}
+    P -- Yes --> Q[System calculates fine:<br/>5 EGP per overdue day]
+    Q --> R[Fine added to member account]
+    P -- No --> S[No fine]
+    R --> T[Copy marked Available]
+    S --> T
+    T --> U{Reservation queue<br/>waiting?}
+    U -- Yes --> V[Notify next member in queue]
+    U -- No --> Z
+    V --> Z

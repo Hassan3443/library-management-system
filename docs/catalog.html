@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Library - Book Catalog</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">City<span>Library</span></a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="catalog.html" class="active">Book Catalog</a>
+        <a href="member.html">Member Dashboard</a>
+        <a href="history.html">Borrowing History</a>
+        <a href="return.html">Return Book</a>
+        <a href="librarian.html">Librarian Dashboard</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>Book Catalog</h1>
+    <p class="subtitle">Search by title, author or category (FR-03). Availability updates with every copy (FR-04).</p>
+
+    <div class="card">
+      <form class="inline" onsubmit="return false;">
+        <div class="field">
+          <label for="q">Search</label>
+          <input type="text" id="q" placeholder="Title, author or category...">
+        </div>
+        <div class="field">
+          <label for="cat">Category</label>
+          <select id="cat"><option value="">All categories</option></select>
+        </div>
+        <div class="field" style="max-width:180px">
+          <label for="avail">Availability</label>
+          <select id="avail">
+            <option value="">All</option>
+            <option value="yes">Available now</option>
+            <option value="no">On loan</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <p class="subtitle" id="count"></p>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th></th><th>Title</th><th>Author</th><th>Category</th><th>Availability</th><th></th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="site-footer">Library Management System - SA1</footer>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>renderCatalog();</script>
+</body>
+</html>

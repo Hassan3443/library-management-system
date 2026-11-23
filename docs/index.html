@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Library - Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">City<span>Library</span></a>
+      <nav class="main-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="catalog.html">Book Catalog</a>
+        <a href="member.html">Member Dashboard</a>
+        <a href="history.html">Borrowing History</a>
+        <a href="return.html">Return Book</a>
+        <a href="librarian.html">Librarian Dashboard</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <h1>Welcome to City Library</h1>
+      <p>Search the catalog, check availability, borrow and return books, reserve titles that are
+         on loan, and keep track of your due dates and fines, all in one place.</p>
+      <a class="btn" href="catalog.html">Browse the catalog</a>
+      <a class="btn secondary" href="member.html">Go to my dashboard</a>
+    </section>
+
+    <section class="grid cols-4" id="stats"></section>
+
+    <h2>What you can do</h2>
+    <section class="grid cols-3">
+      <div class="card">
+        <h3>Search and discover</h3>
+        <p>Find books by title, author or category, and see the live availability of every copy before you make a request. (FR-03, FR-04)</p>
+      </div>
+      <div class="card">
+        <h3>Borrow and return</h3>
+        <p>Submit borrow requests, follow their approval, and return books when you are done. Loans run for 14 days. (FR-05, FR-08, FR-14, FR-15)</p>
+      </div>
+      <div class="card">
+        <h3>Stay on top of due dates</h3>
+        <p>Your dashboard shows current loans, due dates, overdue notices and any fines, at 5 EGP per overdue day. (FR-06, FR-10, FR-11, FR-16)</p>
+      </div>
+      <div class="card">
+        <h3>Reserve popular books</h3>
+        <p>If every copy is on loan, join the reservation queue and get notified when a copy comes back. (FR-09, FR-18)</p>
+      </div>
+      <div class="card">
+        <h3>Track your history</h3>
+        <p>Your full borrowing history stays available, including return dates and fines from late returns. (FR-07)</p>
+      </div>
+      <div class="card">
+        <h3>Librarian tools</h3>
+        <p>Librarians manage the catalog, copies, borrow requests, returns, overdue fines, members and reservation queues. (FR-12 to FR-18)</p>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">Library Management System - Information Systems Analysis and Design 1 (SA1)</footer>
+  <script src="js/data.js"></script>
+  <script>
+    const activeLoans = LOANS.filter(l => !l.returnDate).length;
+    const overdue = LOANS.filter(l => !l.returnDate && l.status === "overdue").length;
+    document.getElementById("stats").innerHTML = [
+      { num: BOOKS.length, lbl: "Titles in catalog" },
+      { num: BOOKS.reduce((n, b) => n + b.copies.length, 0), lbl: "Total copies" },
+      { num: activeLoans, lbl: "Active loans" },
+      { num: overdue, lbl: "Overdue loans" }
+    ].map(s => `<div class="stat"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join("");
+  </script>
+</body>
+</html>
