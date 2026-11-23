@@ -368,3 +368,9 @@ label:has(+ :required)::after { content: " *"; color: var(--danger); }   /* drop
 /* Touch targets + print */
 @media (pointer: coarse) { .btn.small { min-height: 40px; } nav.main-nav a { padding: 10px 14px; } }
 @media print { header.site-header, footer.site-footer, .btn, .skip-link { display: none; } body { background: #fff; } }
+
+/* Small phones: search gets its own row in inline filter forms */
+@media (max-width: 560px) {
+  form.inline .field { min-width: 0; flex: 1 1 calc(50% - 6px); }
+  form.inline .field:first-child { flex: 1 1 100%; }
+}
