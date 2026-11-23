@@ -1,5 +1,11 @@
 # Library Management System
 
+**Live demo: https://hassan3443.github.io/library-management-system/**
+
+| Home | Book Catalog | Librarian Dashboard |
+| --- | --- | --- |
+| ![Home](screenshots/home.png) | ![Book Catalog](screenshots/catalog.png) | ![Librarian Dashboard](screenshots/librarian.png) |
+
 University project for **Information Systems Analysis and Design 1 (SA1)**: analysis, design and a working front-end demo of a Library Management System.
 
 The system helps librarians organize books, manage members, and track borrowing and returns. Members can search the catalog, check availability, borrow and return books, reserve titles that are on loan, and follow their due dates and fines.
@@ -14,13 +20,13 @@ The system helps librarians organize books, manage members, and track borrowing 
 | Activity Diagram | [diagrams/activity-diagram.png](diagrams/activity-diagram.png) ([source](diagrams/activity-diagram.mmd)) |
 | Sequence Diagram | [diagrams/sequence-diagram.png](diagrams/sequence-diagram.png) ([source](diagrams/sequence-diagram.mmd)) |
 | Use Case Diagram | [diagrams/use-case-diagram.png](diagrams/use-case-diagram.png) ([source](diagrams/use-case-diagram.mmd)) |
-| Front end (7 pages) | [docs/](docs/) |
+| Front end (8 pages) | [docs/](docs/) |
 
 All diagrams are consistent with one another and with the 18 functional requirements, and the front end demonstrates the same flows.
 
 ## Front end
 
-Seven pages, static HTML/CSS/JS with mock data (no backend required, per the project brief):
+Eight pages, static HTML/CSS/JS with mock data (no backend required, per the project brief). Demo actions that change state (librarian decisions, catalog edits, suspension, login) persist in the browser via localStorage:
 
 - **Home** - overview, live stats, feature map to the requirements
 - **Book Catalog** - search by title/author/category with live availability (FR-03, FR-04)
@@ -28,7 +34,8 @@ Seven pages, static HTML/CSS/JS with mock data (no backend required, per the pro
 - **Member Dashboard** - current loans, due-date reminders, overdue notices, fines, reservations (FR-06, FR-10, FR-11)
 - **Borrowing History** - every loan with return dates and late fines (FR-07)
 - **Return Book** - pick an active loan, see the fine calculation, confirm the return (FR-08, FR-15, FR-16)
-- **Librarian Dashboard** - pending borrow requests, overdue report with fines, add-book form, member management, reservation queues (FR-12 to FR-18)
+- **Librarian Dashboard** - pending borrow requests with persistent confirm/reject, overdue report with fines, full catalog management (add, update, remove books, register copies), member suspension, reservation queues (FR-12 to FR-18)
+- **Login / Register** - member registration and login forms, demo only (no real authentication) (FR-01, FR-02)
 
 ### Run it
 
@@ -39,18 +46,21 @@ cd docs && python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-The site is also published with GitHub Pages: https://hassan3443.github.io/library-management-system/
 
 ## Business rules
 
 - Loans run 14 days from librarian confirmation
 - Overdue fine: 5 EGP per overdue day
-- Members with unpaid fines or 3 active loans cannot borrow
+- Members with unpaid fines or 3 active loans cannot borrow; the demo enforces this by blocking the borrow action on Book Details and flagging it on the Member Dashboard
 - Reservations are offered to the first member in the queue when a copy returns
 
 ## Diagram sources
 
 Diagrams are written in [Mermaid](https://mermaid.js.org/) (`diagrams/*.mmd`) and rendered to PNG for the report.
+
+## License
+
+MIT - see [LICENSE](LICENSE).
 
 ## Author
 
