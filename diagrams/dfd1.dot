@@ -76,6 +76,7 @@ digraph DFD1 {
   D7 -> P6 [label="stored notices"];
   P6 -> M [label="notifications"];
   L -> P6 [label="reservation queue request"];
+  P6 -> L [label="reservation queues"];
 
   L -> P7 [label="book / copy changes"];
   P7 -> D1 [label="catalog updates"];

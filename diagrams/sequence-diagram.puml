@@ -36,11 +36,10 @@ alt member eligible and copy available
   L -> L : status = PENDING
   L --> MO : loan (PENDING)
   deactivate L
+  MO ->> LO : new pending request
   MO --> M : request submitted
   deactivate MO
-  MO ->> LO : new pending request
 else not eligible (inactive account, unpaid fine, 3 active loans) or no copy available
-  activate MO
   MO --> M : request rejected with reason
   deactivate MO
 end
