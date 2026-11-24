@@ -35,7 +35,7 @@ Nine pages, static HTML/CSS/JS with mock data (no backend required, per the proj
 - **Borrowing History** - every loan with return dates and late fines (FR-07)
 - **Return Book** - pick an active loan, see the fine calculation, confirm the return (FR-08, FR-15, FR-16)
 - **Librarian Dashboard** - pending borrow requests with persistent confirm/reject, overdue report with fines, full catalog management (add, update, remove books, register copies), member suspension, reservation queues (FR-12 to FR-18)
-- **Login / Register** - real credential check against the demo accounts in `docs/js/accounts.js` (static demo, so the check runs in the browser). Wrong password does not log in. Each role gets its own navigation and dashboard. New members can register.
+- **Login / Register** (FR-01, FR-02) - real credential check against the demo accounts in `docs/js/accounts.js` (static demo, so the check runs in the browser). Wrong password does not log in. Each role gets its own navigation and dashboard. New members can register.
 - **Members** (librarian only) - list of members, suspend/reactivate, promote a member to librarian, remove a member (FR-17, FR-19)
 
 **Demo accounts:** librarian `hassan@gmail.com` / `12345678`; members `sara.m@example.com` / `sara1234`, `omar.k@example.com` / `omar1234`, `mona.s@example.com` / `mona1234` (no loans, can be removed), `hassan.ashraf@example.com` / `member101`.

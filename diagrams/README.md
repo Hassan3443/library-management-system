@@ -10,7 +10,7 @@ Each source has a rendered PNG next to it.
 | DFD Level 0 (context) | System boundary, 2 external entities | [dfd0.dot](dfd0.dot) |
 | DFD Level 1 | 8 processes, 7 data stores, all 19 requirements | [dfd1.dot](dfd1.dot) |
 | Class diagram | Every function FR-01 to FR-19 as an operation, tagged with its FR id | [class-diagram.puml](class-diagram.puml) |
-| Use case diagram | All 19 use cases, include relations | [use-case-diagram.puml](use-case-diagram.puml) |
+| Use case diagram | All 19 use cases, include and extend relations | [use-case-diagram.puml](use-case-diagram.puml) |
 | Activity diagram | Borrow and return workflow with swimlanes | [activity-diagram.puml](activity-diagram.puml) |
 | Sequence diagram | Borrow request scenario (FR-05, FR-14) using class-diagram objects | [sequence-diagram.puml](sequence-diagram.puml) |
 

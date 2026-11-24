@@ -10,42 +10,62 @@ participant ":Book" as B
 participant ":BookCopy" as C
 participant ":Loan" as L
 participant ":Fine" as F
+participant ":Librarian" as LO
 actor "Librarian" as LB
 
-M -> B : viewBookDetails(book)  (FR-04)
+M -> MO : viewBookDetails(book)  (FR-04)
+activate MO
+MO -> B : getAvailableCopies()
 activate B
-B -> B : getAvailableCopies()
-B --> M : details + availability
+B --> MO : available copies
 deactivate B
+MO --> M : details + availability
+deactivate MO
 
 M -> MO : requestBorrow(book)  (FR-05)
 activate MO
-MO -> L : create Loan(member, book)
-activate L
-L -> F : unpaid fines for member?
-F --> L : none / unpaid
-L -> L : count member's active loans (limit 3)
-alt member eligible and a copy is available
-  L -> C : find an AVAILABLE copy
-  C --> L : copy
+MO -> MO : check account active
+MO -> F : unpaid fines for member?
+F --> MO : none / unpaid
+MO -> MO : count active loans (limit 3)
+MO -> C : find an AVAILABLE copy
+C --> MO : copy / none
+alt member eligible and copy available
+  MO -> L ** : <<create>> Loan(member, copy)
+  activate L
   L -> L : status = PENDING
   L --> MO : loan (PENDING)
-  MO --> M : request submitted
-  L --> LB : new pending request
   deactivate L
-  LB -> L : confirmBorrowRequest(loan)  (FR-14)
-  activate L
-  L -> L : borrowDate = today, dueDate = +14 days
-  L -> L : status = ACTIVE
-  L -> C : markOnLoan()
-  C --> L : status = ON_LOAN
-  L --> M : loan confirmed with due date
-else not eligible (unpaid fine or 3 active loans) or no copy available
-  L --> MO : rejected with reason
+  MO --> M : request submitted
+  deactivate MO
+  MO ->> LO : new pending request
+else not eligible (inactive account, unpaid fine, 3 active loans) or no copy available
+  activate MO
   MO --> M : request rejected with reason
+  deactivate MO
 end
-deactivate L
-deactivate MO
+
+... Later: Librarian reviews pending request ...
+
+LB -> LO : confirmBorrowRequest(loan)  (FR-14)
+activate LO
+alt approved
+  LO -> L : borrowDate = today, dueDate = +14 days
+  activate L
+  LO -> L : status = ACTIVE
+  deactivate L
+  LO -> C : markOnLoan()
+  activate C
+  C --> LO : status = ON_LOAN
+  deactivate C
+  LO ->> M : loan confirmed with due date
+else rejected
+  LO -> L : status = REJECTED
+  activate L
+  deactivate L
+  LO ->> M : request rejected with reason
+end
+deactivate LO
 
 note over M, LB
   Return (FR-08 initiateReturn, FR-15 processReturn, FR-16 fine)

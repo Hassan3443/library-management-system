@@ -44,6 +44,7 @@ class BookCopy {
   + markAvailable()
   + markOnLoan()
   + markReserved()
+  + markMaintenance()
 }
 abstract class User {
   # userId : int
@@ -51,16 +52,16 @@ abstract class User {
   # email : String
   # passwordHash : String
   --
-  + login(email, password) : boolean  <<FR-02>>
+  + login(email : String, password : String) : boolean  <<FR-02>>
   + logout()                <<FR-02>>
 }
 class Member {
   - joinDate : Date
   - isActive : boolean
   --
-  + register(name, email, password)          <<FR-01>>
-  + searchBooks(criteria) : List             <<FR-03>>
-  + viewBookDetails(book) : Book             <<FR-04>>
+  + register(name : String, email : String, password : String)  <<FR-01>>
+  + searchBooks(criteria : String) : List  <<FR-03>>
+  + viewBookDetails(book : Book) : Book  <<FR-04>>
   + requestBorrow(book : Book) : Loan        <<FR-05>>
   + viewCurrentLoans() : List                <<FR-06>>
   + viewHistory() : List                     <<FR-07>>
@@ -128,10 +129,14 @@ class Reservation {
 User <|-- Member
 User <|-- Librarian
 Member "1" -- "0..*" Notification : receives
-Book "1" *-- "1..*" BookCopy : has copies
+Book "1" *-- "0..*" BookCopy : has copies
 Member "1" -- "0..*" Loan : borrows
 BookCopy "1" -- "0..*" Loan : lent in
-Librarian "1" -- "0..*" Loan : confirms / processes
+Librarian "0..1" -- "0..*" Loan : confirms / processes
+Librarian ..> Book : manages
+Librarian ..> BookCopy : manages
+Librarian ..> Member : manages
+Librarian ..> Reservation : manages
 Loan "1" -- "0..1" Fine : may incur
 Member "1" -- "0..*" Fine : owes
 Member "1" -- "0..*" Reservation : places

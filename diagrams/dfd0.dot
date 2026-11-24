@@ -1,5 +1,5 @@
 digraph DFD0 {
-  graph [rankdir=LR, nodesep=1, ranksep=2.4, fontname="Helvetica", labelloc=t, fontsize=20, label="Library Management System: Context Diagram (DFD Level 0)\n", dpi=150, pad=0.3, bgcolor=white];
+  graph [rankdir=LR, nodesep=1, ranksep=2.4, fontname="Helvetica", labelloc=t, fontsize=20, label="Library Management System: Context Diagram (DFD Level 0)\n", dpi=150, pad=0.7, margin=0.3, bgcolor=white];
   node [fontname="Helvetica", fontsize=12];
   edge [fontname="Helvetica", fontsize=11, color="#334155", fontcolor="#1e293b", arrowsize=0.75];
   M [label="Library Member", shape=box, style="filled,bold", fillcolor="#fde68a", color="#92400e", margin="0.3,0.25"];
@@ -7,6 +7,6 @@ digraph DFD0 {
   S [label="0\nLibrary\nManagement\nSystem", shape=circle, style=filled, fillcolor="#dbeafe", color="#1d4ed8", width=2.2, fixedsize=true, fontsize=14];
   M -> S [label="registration, login, search criteria,\nborrow / return / reservation requests"];
   S -> M [label="book availability, loans,\nfines, notifications, queue position"];
-  L -> S [label="catalog and copy changes,\nloan confirmations, return processing,\nmember actions"];
-  S -> L [label="pending requests, overdue report,\nmember list, reservation queues"];
+  L -> S [label="catalog and copy changes,\nloan confirmations, return processing,\nmember actions, login details"];
+  S -> L [label="pending requests, overdue report,\nmember list, reservation queues,\nlogin result"];
 }
