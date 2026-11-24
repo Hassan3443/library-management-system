@@ -785,3 +785,12 @@ body { -webkit-tap-highlight-color: transparent; }
   input[type=text], input[type=email], input[type=password],
   input[type=date], input[type=number], select { font-size: 16px; }
 }
+
+/* Login and registration */
+.auth-wrap { max-width: 420px; margin: 24px auto 0; }
+.auth-wrap .card:hover { transform: none; }
+.google-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; color: var(--muted, #6b7280); font-size: .85rem; }
+.auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.auth-switch { margin: 18px 0 0; text-align: center; font-size: .95rem; }
+[hidden] { display: none !important; }

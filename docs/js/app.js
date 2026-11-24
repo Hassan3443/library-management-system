@@ -508,6 +508,17 @@ function renderMembersPage() {
 /* ---------- Login / Register ---------- */
 const HOME_BY_ROLE = { member: "member.html", librarian: "librarian.html" };
 function renderLoginPage() {
+  const showCard = which => {
+    document.getElementById("login-card").hidden = which !== "login";
+    document.getElementById("register-card").hidden = which !== "register";
+    document.title = which === "register" ? "City Library - Register" : "City Library - Login";
+  };
+  const fromHash = () => showCard(location.hash === "#register" ? "register" : "login");
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+  document.getElementById("google-btn").addEventListener("click", () => {
+    document.getElementById("login-msg").innerHTML = `<div class="notice">Google sign-in is not available yet. Please use your email and password.</div>`;
+  });
   const acc0 = currentAccount();
   if (acc0) {
     const r = accountRole(acc0);
