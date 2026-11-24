@@ -20,13 +20,13 @@ The system helps librarians organize books, manage members, and track borrowing 
 | Activity Diagram | [diagrams/activity-diagram.png](diagrams/activity-diagram.png) ([source](diagrams/activity-diagram.puml)) |
 | Sequence Diagram | [diagrams/sequence-diagram.png](diagrams/sequence-diagram.png) ([source](diagrams/sequence-diagram.puml)) |
 | Use Case Diagram | [diagrams/use-case-diagram.png](diagrams/use-case-diagram.png) ([source](diagrams/use-case-diagram.puml)) |
-| Front end (8 pages) | [docs/](docs/) |
+| Front end (9 pages) | [docs/](docs/) |
 
 All diagrams are consistent with one another and with the 18 functional requirements, and the front end demonstrates the same flows.
 
 ## Front end
 
-Eight pages, static HTML/CSS/JS with mock data (no backend required, per the project brief). Demo actions that change state (librarian decisions, catalog edits, suspension, login) persist in the browser via localStorage:
+Nine pages, static HTML/CSS/JS with mock data (no backend required, per the project brief). Demo actions that change state (librarian decisions, catalog edits, suspension, login) persist in the browser via localStorage:
 
 - **Home** - overview, live stats, feature map to the requirements
 - **Book Catalog** - search by title/author/category with live availability (FR-03, FR-04)
