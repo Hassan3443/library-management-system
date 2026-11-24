@@ -1,12 +1,13 @@
 digraph DFD1 {
-  graph [rankdir=LR, splines=true, nodesep=0.35, ranksep=1.0, concentrate=false, fontname="Helvetica", labelloc=t, fontsize=20, label="Library Management System: Data Flow Diagram, Level 1\n", dpi=110, pad=0.7, margin=0.3, bgcolor=white];
-  node [fontname="Helvetica", fontsize=12];
-  edge [fontname="Helvetica", fontsize=10, color="#334155", fontcolor="#1e293b", arrowsize=0.7];
+  graph [rankdir=LR, splines=true, nodesep=0.45, ranksep=1.3, newrank=true, fontname="Helvetica", labelloc=t, fontsize=26, label="Library Management System: Data Flow Diagram, Level 1
+", dpi=100, pad=0.6, margin=0.2, bgcolor=white];
+  node [fontname="Helvetica", fontsize=15];
+  edge [fontname="Helvetica", fontsize=13, color="#334155", fontcolor="#1e293b", arrowsize=0.7];
 
   M [label="Library Member", shape=box, style="filled,bold", fillcolor="#fde68a", color="#92400e", margin="0.25,0.18"];
   L [label="Librarian", shape=box, style="filled,bold", fillcolor="#fde68a", color="#92400e", margin="0.25,0.18"];
 
-  node [shape=circle, style=filled, fillcolor="#dbeafe", color="#1d4ed8", width=1.55, fixedsize=true, fontsize=11];
+  node [shape=circle, style=filled, fillcolor="#dbeafe", color="#1d4ed8", width=2.0, fixedsize=true, fontsize=15];
   P1 [label="1.0\nRegister and\nAuthenticate"];
   P2 [label="2.0\nSearch and\nView Books"];
   P3 [label="3.0\nManage Borrow\nRequests"];
@@ -16,15 +17,17 @@ digraph DFD1 {
   P7 [label="7.0\nManage Catalog\nand Copies"];
   P8 [label="8.0\nManage Member\nAccounts"];
 
-  node [shape=none, fixedsize=false, fontsize=11];
-  D1 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D1   Books</FONT></TD></TR></TABLE>>];
-  D2 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D2   Book Copies</FONT></TD></TR></TABLE>>];
-  D3 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D3   Members</FONT></TD></TR></TABLE>>];
-  D4 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D4   Loans</FONT></TD></TR></TABLE>>];
-  D5 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D5   Fines</FONT></TD></TR></TABLE>>];
-  D6 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D6   Reservations</FONT></TD></TR></TABLE>>];
-  D7 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="11">D7   Notifications</FONT></TD></TR></TABLE>>];
+  node [shape=none, fixedsize=false, fontsize=15];
+  D1 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D1   Books</FONT></TD></TR></TABLE>>];
+  D2 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D2   Book Copies</FONT></TD></TR></TABLE>>];
+  D3 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D3   Members</FONT></TD></TR></TABLE>>];
+  D4 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D4   Loans</FONT></TD></TR></TABLE>>];
+  D5 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D5   Fines</FONT></TD></TR></TABLE>>];
+  D6 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D6   Reservations</FONT></TD></TR></TABLE>>];
+  D7 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D7   Notifications</FONT></TD></TR></TABLE>>];
 
+  {rank=min; M}
+  {rank=max; L}
   M -> P1 [label="registration / login details"];
   P1 -> M [label="login result"];
   P1 -> D3 [label="new member record"];
