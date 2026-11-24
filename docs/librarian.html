@@ -30,11 +30,11 @@
   </header>
   <main id="main">
     <h1>Librarian Dashboard</h1>
-    <p class="subtitle">Catalog, copies, borrow requests, returns, overdue fines, members and reservations (FR-12 to FR-18).</p>
+    <p class="subtitle">Catalog, copies, borrow requests, returns, overdue fines, members and reservations.</p>
     <div id="notice"></div>
     <section class="grid cols-4" id="stats"></section>
 
-    <h2>Pending borrow requests (FR-14)</h2>
+    <h2>Pending borrow requests</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
         <thead><tr><th>Request</th><th>Member</th><th>Book</th><th>Date</th><th>Actions</th></tr></thead>
@@ -42,7 +42,7 @@
       </table>
     </div>
 
-    <h2>Overdue loans and fines (FR-16)</h2>
+    <h2>Overdue loans and fines</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
         <thead><tr><th>Loan</th><th>Book</th><th>Due date</th><th>Overdue days</th><th>Fine (5 EGP/day)</th></tr></thead>
@@ -50,7 +50,7 @@
       </table>
     </div>
 
-    <h2>Add a book to the catalog (FR-12)</h2>
+    <h2>Add a book to the catalog</h2>
     <div class="card">
       <form class="inline" onsubmit="return false;">
         <div class="field"><label>Title</label><input type="text" id="bt" placeholder="Book title"></div>
@@ -61,7 +61,7 @@
       </form>
     </div>
 
-    <h2>Manage catalog (FR-12, FR-13)</h2>
+    <h2>Manage catalog</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
         <thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Copies (avail/total)</th><th>Actions</th></tr></thead>
@@ -69,7 +69,7 @@
       </table>
     </div>
 
-    <h2>Members (FR-17)</h2>
+    <h2>Members</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
         <thead><tr><th>Member</th><th>Email</th><th>Active loans</th><th>Unpaid fines</th><th>Status</th><th>Action</th></tr></thead>
@@ -77,7 +77,7 @@
       </table>
     </div>
 
-    <h2>Reservation queues (FR-18)</h2>
+    <h2>Reservation queues</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
         <thead><tr><th>Book</th><th>Member</th><th>Reserved on</th><th>Queue position</th></tr></thead>

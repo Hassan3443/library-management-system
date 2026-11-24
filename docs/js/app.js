@@ -38,7 +38,7 @@ const STATE = Object.assign(
   MEMBERS.forEach(m => { if (m.id in STATE.suspended) m.suspended = STATE.suspended[m.id]; });
 })();
 
-/* Business rule (FR-05/FR-08): a member cannot place a borrow request while
+/* Business rule: a member cannot place a borrow request while
    suspended, with an unpaid fine, or while holding 3 or more active loans. */
 function memberEligibility() {
   const reasons = [];
@@ -120,8 +120,8 @@ function renderBookDetails() {
         ? `<span class="badge ok">${nAvail} of ${b.copies.length} copies available</span>`
         : `<span class="badge warn">All copies on loan</span>`}</p>
       <div style="margin-top:18px">
-        <button class="btn" id="borrow" ${nAvail && elig.ok ? "" : "disabled"}>Request to borrow (FR-05)</button>
-        <button class="btn secondary" id="reserve" ${nAvail ? "disabled" : ""}>Reserve this book (FR-09)</button>
+        <button class="btn" id="borrow" ${nAvail && elig.ok ? "" : "disabled"}>Request to borrow</button>
+        <button class="btn secondary" id="reserve" ${nAvail ? "disabled" : ""}>Reserve this book</button>
       </div>
       <div id="action-result" style="margin-top:14px"></div>
     </div>
@@ -140,21 +140,21 @@ function renderBookDetails() {
   if (!elig.ok) {
     document.getElementById("action-result").innerHTML =
       `<div class="notice">Borrowing is blocked for this member: ${elig.reasons.join("; ")}.
-       Resolve this on the <a href="member.html">member dashboard</a> first (FR-05, business rules).</div>`;
+       Resolve this on the <a href="member.html">member dashboard</a> first.</div>`;
   }
   document.getElementById("borrow").addEventListener("click", () => {
     const current = memberEligibility();
     if (!current.ok) {
       document.getElementById("action-result").innerHTML =
-        `<div class="notice">Borrow request blocked: ${current.reasons.join("; ")} (FR-05, business rules).</div>`;
+        `<div class="notice">Borrow request blocked: ${current.reasons.join("; ")}.</div>`;
       return;
     }
     document.getElementById("action-result").innerHTML =
-      `<div class="notice ok">Borrow request sent. A librarian will review and confirm it; the due date is set at confirmation (FR-14).</div>`;
+      `<div class="notice ok">Borrow request sent. A librarian will review and confirm it; the due date is set at confirmation.</div>`;
   });
   document.getElementById("reserve").addEventListener("click", () => {
     document.getElementById("action-result").innerHTML =
-      `<div class="notice ok">You joined the reservation queue at position ${queue.length + 1}. You will be notified when a copy is returned (FR-09, FR-18).</div>`;
+      `<div class="notice ok">You joined the reservation queue at position ${queue.length + 1}. You will be notified when a copy is returned.</div>`;
   });
 }
 
@@ -169,11 +169,11 @@ function renderMemberDashboard() {
   mine.forEach(l => {
     const b = bookById(l.bookId);
     const days = daysBetween(TODAY, l.dueDate);
-    if (l.status === "overdue") notices.push(`<div class="notice">Overdue: "${esc(b.title)}" was due on ${l.dueDate}. Please return it; fines accrue at ${FINE_PER_DAY} EGP/day (FR-11).</div>`);
-    else if (days <= 3) notices.push(`<div class="notice ok">Reminder: "${esc(b.title)}" is due in ${days} day(s), on ${l.dueDate} (FR-11).</div>`);
+    if (l.status === "overdue") notices.push(`<div class="notice">Overdue: "${esc(b.title)}" was due on ${l.dueDate}. Please return it; fines accrue at ${FINE_PER_DAY} EGP/day.</div>`);
+    else if (days <= 3) notices.push(`<div class="notice ok">Reminder: "${esc(b.title)}" is due in ${days} day(s), on ${l.dueDate}.</div>`);
   });
   const elig = memberEligibility();
-  if (!elig.ok) notices.unshift(`<div class="notice">Borrowing is currently blocked for this account: ${elig.reasons.join("; ")} (FR-05, business rules).</div>`);
+  if (!elig.ok) notices.unshift(`<div class="notice">Borrowing is currently blocked for this account: ${elig.reasons.join("; ")}.</div>`);
   document.getElementById("notices").innerHTML = notices.join("");
 
   document.getElementById("loans").innerHTML = mine.map(l => {
@@ -241,7 +241,7 @@ function renderReturnPage() {
           <tr><th>Overdue days</td><td>${late}</td></tr>
           <tr><th>Fine</th><td>${fine ? `<span class="badge danger">${fine} EGP (${late} x ${FINE_PER_DAY} EGP)</span>` : '<span class="badge ok">No fine</span>'}</td></tr>
         </table>
-        ${waiting.length ? `<p style="margin-top:12px" class="book-meta">Note: ${waiting.length} member(s) have this book reserved; the next in queue will be notified (FR-18).</p>` : ""}
+        ${waiting.length ? `<p style="margin-top:12px" class="book-meta">Note: ${waiting.length} member(s) have this book reserved; the next in queue will be notified.</p>` : ""}
         <div style="margin-top:16px"><button class="btn" id="confirm">Confirm return</button></div>
         <div id="done" style="margin-top:12px"></div>
       </div>`;
@@ -272,7 +272,7 @@ function renderLibrarianDashboard() {
       const decision = STATE.decisions[r.id];
       const bookCell = `<div class="book-title">${esc(b.title)}</div><div class="book-meta">${esc(b.author)}</div>`;
       const action = decision === "ok"
-        ? `<span class="badge ok">Confirmed</span> Loan recorded, due in 14 days (FR-14).`
+        ? `<span class="badge ok">Confirmed</span> Loan recorded, due in 14 days.`
         : decision === "no"
           ? `<span class="badge muted">Rejected</span> The member was notified.`
           : `<button class="btn small" data-act="ok" data-id="${r.id}">Confirm</button>
@@ -296,7 +296,7 @@ function renderLibrarianDashboard() {
       <td>${days}</td><td><span class="badge danger">${loanFine(l)} EGP</span></td></tr>`;
   }).join("") || `<tr><td colspan="5">No overdue loans.</td></tr>`;
 
-  /* Catalog management: add, update, remove books and register copies (FR-12, FR-13). */
+  /* Catalog management: add, update, remove books and register copies. */
   const noticeEl = document.getElementById("notice");
   const catBody = document.getElementById("catalog-table");
   let editingId = null;
@@ -331,7 +331,7 @@ function renderLibrarianDashboard() {
         const added = STATE.addedBooks.find(x => x.id === editingId);
         if (added) Object.assign(added, { title: data.title, author: data.author, category: data.category });
         saveState();
-        noticeEl.innerHTML = `<div class="notice ok">"${esc(data.title)}" updated (FR-12).</div>`;
+        noticeEl.innerHTML = `<div class="notice ok">"${esc(data.title)}" updated.</div>`;
       }
       clearForm();
     } else {
@@ -345,7 +345,7 @@ function renderLibrarianDashboard() {
       STATE.addedBooks.push(b);
       saveState();
       noticeEl.innerHTML =
-        `<div class="notice ok">"${esc(b.title)}" added to the catalog with ${b.copies.length} cop(y/ies) (FR-12, FR-13).</div>`;
+        `<div class="notice ok">"${esc(b.title)}" added to the catalog with ${b.copies.length} cop(y/ies).</div>`;
     }
     drawCatalog();
   });
@@ -395,7 +395,7 @@ function renderLibrarianDashboard() {
     }
   });
 
-  /* Member management: suspend/reactivate is functional and persists (FR-17). */
+  /* Member management: suspend/reactivate is functional and persists. */
   const memEl = document.getElementById("members");
   function drawMembers() {
     memEl.innerHTML = MEMBERS.map(m =>
@@ -422,7 +422,7 @@ function renderLibrarianDashboard() {
   }).join("");
 }
 
-/* ---------- Login / Register (FR-01, FR-02; mock, no real authentication) ---------- */
+/* ---------- Login / Register ---------- */
 const HOME_BY_ROLE = { member: "member.html", librarian: "librarian.html" };
 function roleOf(u) { return u && u.role === "librarian" ? "librarian" : "member"; }
 function renderLoginPage() {
@@ -557,7 +557,7 @@ addEventListener('keydown', function (e) {
   if (s) { e.preventDefault(); s.focus(); s.select(); }
 });
 
-/* ---------- Role-based navigation, page guard and logout (FR-02) ---------- */
+/* ---------- Role-based navigation, page guard and logout ---------- */
 (function () {
   const NAV = {
     guest: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["login.html", "Login"]],
