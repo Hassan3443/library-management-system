@@ -74,8 +74,11 @@ digraph DFD1 {
   P7 -> D1 [label="catalog updates"];
   P7 -> D2 [label="copy updates"];
 
-  L -> P8 [label="member actions\n(view, suspend)"];
-  P8 -> D3 [label="account status"];
+  L -> P8 [label="member actions\n(view, suspend, promote,\nremove)"];
+  P8 -> D3 [label="account status, role,\nmember removal"];
+  D4 -> P8 [label="active loans"];
+  P8 -> D4 [label="delete removed\nmember's loans"];
+  P8 -> D6 [label="delete removed\nmember's reservations"];
   D5 -> P8 [label="unpaid fines"];
   P8 -> L [label="member list"];
 }

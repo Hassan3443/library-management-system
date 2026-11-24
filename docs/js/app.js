@@ -16,9 +16,19 @@ function loadState() {
 function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
 const STATE = Object.assign(
   { addedBooks: [], removedBookIds: [], updatedBooks: {}, addedCopies: {},
-    decisions: {}, suspended: {}, user: null, accounts: [], addedMembers: [], promoted: {} },
+    decisions: {}, suspended: {}, user: null, accounts: [], addedMembers: [], promoted: {}, removedMembers: [] },
   loadState()
 );
+
+/* Delete a member and everything that belongs to them from the in-memory demo data. */
+function dropWhere(arr, fn) { for (let i = arr.length - 1; i >= 0; i--) if (fn(arr[i])) arr.splice(i, 1); }
+function removeMemberData(id) {
+  dropWhere(MEMBERS, m => m.id === id);
+  dropWhere(LOANS, l => l.memberId === id);
+  dropWhere(FINES, f => f.memberId === id);
+  dropWhere(RESERVATIONS, r => r.memberId === id);
+  dropWhere(PENDING_REQUESTS, r => r.memberId === id);
+}
 
 /* Apply persisted actions to the in-memory demo data before any page renders. */
 (function applyState() {
@@ -36,11 +46,12 @@ const STATE = Object.assign(
   });
   STATE.addedBooks.forEach(b => { if (!bookById(b.id)) BOOKS.push(b); });
   STATE.addedMembers.forEach(m => { if (!MEMBERS.some(x => x.id === m.id)) MEMBERS.push(m); });
+  STATE.removedMembers.forEach(removeMemberData);
   MEMBERS.forEach(m => { if (m.id in STATE.suspended) m.suspended = STATE.suspended[m.id]; });
 })();
 
 /* ---------- Accounts and session (credentials checked against ACCOUNTS + registered accounts) ---------- */
-function allAccounts() { return ACCOUNTS.concat(STATE.accounts); }
+function allAccounts() { return ACCOUNTS.concat(STATE.accounts).filter(a => !(a.memberId && STATE.removedMembers.includes(a.memberId))); }
 function accountRole(acc) {
   return (acc.role === "librarian" || (acc.memberId && STATE.promoted[acc.memberId])) ? "librarian" : "member";
 }
@@ -448,7 +459,7 @@ function renderMembersPage() {
        <td>${m.suspended ? '<span class="badge danger">Suspended</span>' : '<span class="badge ok">Active</span>'}${isLib ? ' <span class="badge info">Librarian</span>' : ""}</td>
        <td><button class="btn small secondary" data-suspend="${m.id}">${m.suspended ? "Reactivate" : "Suspend"}</button>
        ${acc && !isLib ? `<button class="btn small" data-promote="${m.id}">Make librarian</button>` : ""}
-       ${isLib ? `<button class="btn small danger" data-demote="${m.id}">Remove librarian role</button>` : ""}</td></tr>`;
+       ${isLib ? `<button class="btn small danger" data-demote="${m.id}">Remove librarian role</button>` : `<button class="btn small danger" data-remove="${m.id}">Remove member</button>`}</td></tr>`;
     }).join("");
     staffEl.innerHTML = allAccounts().filter(x => accountRole(x) === "librarian").map(x =>
       `<tr><td><div class="book-title">${esc(x.name)}</div></td><td>${esc(x.email)}</td>
@@ -459,6 +470,27 @@ function renderMembersPage() {
     const s = e.target.closest("button[data-suspend]");
     const p = e.target.closest("button[data-promote]");
     const d = e.target.closest("button[data-demote]");
+    const r = e.target.closest("button[data-remove]");
+    if (r) {
+      const id = Number(r.dataset.remove);
+      const m = MEMBERS.find(x => x.id === id);
+      const loans = LOANS.filter(l => l.memberId === id && !l.returnDate).length;
+      const fines = FINES.filter(f => f.memberId === id && !f.paid).reduce((t, f) => t + f.amount, 0);
+      const msg = document.getElementById("members-msg");
+      if (loans || fines) {
+        msg.innerHTML = `<div class="notice">${esc(m.name)} cannot be removed: ${[loans ? loans + " active loan(s)" : "", fines ? fines + " EGP unpaid fines" : ""].filter(Boolean).join(" and ")}. Resolve them first.</div>`;
+        return;
+      }
+      if (!confirm("Remove " + m.name + " permanently? Their account, reservations and loan history are deleted.")) return;
+      removeMemberData(id);
+      STATE.removedMembers.push(id);
+      STATE.addedMembers = STATE.addedMembers.filter(x => x.id !== id);
+      delete STATE.promoted[id];
+      saveState();
+      msg.innerHTML = `<div class="notice ok">${esc(m.name)} was removed.</div>`;
+      draw();
+      return;
+    }
     if (s) {
       const m = MEMBERS.find(x => x.id === Number(s.dataset.suspend));
       m.suspended = !m.suspended;
@@ -503,7 +535,7 @@ function renderLoginPage() {
     const msg = document.getElementById("register-msg");
     if (pass.length < 6) { msg.innerHTML = `<div class="notice">Password must be at least 6 characters.</div>`; return; }
     if (allAccounts().some(a => a.email.toLowerCase() === email)) { msg.innerHTML = `<div class="notice">An account with this email already exists.</div>`; return; }
-    const id = 200 + STATE.addedMembers.length;
+    const id = Math.max(199, ...STATE.removedMembers, ...MEMBERS.map(m => m.id)) + 1;
     const rec = { id: id, name: name, email: email, joinDate: TODAY, activeLoans: 0, unpaidFines: 0, suspended: false };
     STATE.addedMembers.push(rec);
     STATE.accounts.push({ email: email, password: pass, name: name, role: "member", memberId: id });

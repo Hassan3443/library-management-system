@@ -6,5 +6,6 @@ const ACCOUNTS = [
   { email: "nour@library.test", password: "librarian2026", name: "Nour Adel", role: "librarian" },
   { email: "hassan.ashraf@example.com", password: "member101", name: "Hassan Ashraf", role: "member", memberId: 101 },
   { email: "sara.m@example.com", password: "sara1234", name: "Sara Mahmoud", role: "member", memberId: 104 },
-  { email: "omar.k@example.com", password: "omar1234", name: "Omar Khaled", role: "member", memberId: 108 }
+  { email: "omar.k@example.com", password: "omar1234", name: "Omar Khaled", role: "member", memberId: 108 },
+  { email: "mona.s@example.com", password: "mona1234", name: "Mona Samir", role: "member", memberId: 112 }
 ];

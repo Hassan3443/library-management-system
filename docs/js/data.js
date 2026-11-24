@@ -61,7 +61,8 @@ const RESERVATIONS = [
 const MEMBERS = [
   { id: 101, name: "Hassan Ashraf", email: "hassan.ashraf@example.com", activeLoans: 3, unpaidFines: 30, suspended: false },
   { id: 104, name: "Sara Mahmoud", email: "sara.m@example.com", activeLoans: 1, unpaidFines: 0, suspended: false },
-  { id: 108, name: "Omar Khaled", email: "omar.k@example.com", activeLoans: 2, unpaidFines: 45, suspended: true }
+  { id: 108, name: "Omar Khaled", email: "omar.k@example.com", activeLoans: 2, unpaidFines: 45, suspended: true },
+  { id: 112, name: "Mona Samir", email: "mona.s@example.com", activeLoans: 0, unpaidFines: 0, suspended: false }
 ];
 
 const FINE_PER_DAY = 5;

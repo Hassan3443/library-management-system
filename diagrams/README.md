@@ -1,6 +1,6 @@
 # Diagrams
 
-All diagrams describe the same system and the same 18 functional requirements
+All diagrams describe the same system and the same 19 functional requirements
 (see [requirements/functional-requirements.md](../requirements/functional-requirements.md)).
 Sources are diagrams-as-code: PlantUML (`.puml`) for UML diagrams and Graphviz (`.dot`) for the DFDs.
 Each source has a rendered PNG next to it.
@@ -8,9 +8,9 @@ Each source has a rendered PNG next to it.
 | Diagram | Covers | Source |
 | --- | --- | --- |
 | DFD Level 0 (context) | System boundary, 2 external entities | [dfd0.dot](dfd0.dot) |
-| DFD Level 1 | 8 processes, 7 data stores, all 18 requirements | [dfd1.dot](dfd1.dot) |
-| Class diagram | Every function FR-01 to FR-18 as an operation, tagged with its FR id | [class-diagram.puml](class-diagram.puml) |
-| Use case diagram | All 18 use cases, include relations | [use-case-diagram.puml](use-case-diagram.puml) |
+| DFD Level 1 | 8 processes, 7 data stores, all 19 requirements | [dfd1.dot](dfd1.dot) |
+| Class diagram | Every function FR-01 to FR-19 as an operation, tagged with its FR id | [class-diagram.puml](class-diagram.puml) |
+| Use case diagram | All 19 use cases, include relations | [use-case-diagram.puml](use-case-diagram.puml) |
 | Activity diagram | Borrow and return workflow with swimlanes | [activity-diagram.puml](activity-diagram.puml) |
 | Sequence diagram | Borrow request scenario (FR-05, FR-14) using class-diagram objects | [sequence-diagram.puml](sequence-diagram.puml) |
 

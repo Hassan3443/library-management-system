@@ -30,8 +30,9 @@ rectangle "Library Management System" {
     usecase "UC14 Confirm borrow request\nand issue loan (FR-14)" as UC14
     usecase "UC15 Process return\n(FR-15)" as UC15
     usecase "UC16 Calculate overdue fine\n(FR-16)" as UC16
-    usecase "UC17 Manage member accounts\n(FR-17)" as UC17
+    usecase "UC17 Manage member accounts\n(suspend, promote) (FR-17)" as UC17
     usecase "UC18 Manage reservation queue\n(FR-18)" as UC18
+    usecase "UC19 Remove member\n(FR-19)" as UC19
   }
 }
 
@@ -52,6 +53,7 @@ UC14 <-- L
 UC15 <-- L
 UC17 <-- L
 UC18 <-- L
+UC19 <-- L
 
 UC3 .> UC4 : <<include>>
 UC5 .> UC4 : <<include>>

@@ -14,7 +14,7 @@ The system helps librarians organize books, manage members, and track borrowing 
 
 | Deliverable | Location |
 | --- | --- |
-| Functional requirements (18) | [requirements/functional-requirements.md](requirements/functional-requirements.md) |
+| Functional requirements (19) | [requirements/functional-requirements.md](requirements/functional-requirements.md) |
 | Data Flow Diagram, Level 0 and Level 1 | [diagrams/dfd0.png](diagrams/dfd0.png), [diagrams/dfd1.png](diagrams/dfd1.png) |
 | Class Diagram | [diagrams/class-diagram.png](diagrams/class-diagram.png) ([source](diagrams/class-diagram.puml)) |
 | Activity Diagram | [diagrams/activity-diagram.png](diagrams/activity-diagram.png) ([source](diagrams/activity-diagram.puml)) |
@@ -22,7 +22,7 @@ The system helps librarians organize books, manage members, and track borrowing 
 | Use Case Diagram | [diagrams/use-case-diagram.png](diagrams/use-case-diagram.png) ([source](diagrams/use-case-diagram.puml)) |
 | Front end (9 pages) | [docs/](docs/) |
 
-All diagrams are consistent with one another and with the 18 functional requirements, and the front end demonstrates the same flows.
+All diagrams are consistent with one another and with the 19 functional requirements, and the front end demonstrates the same flows.
 
 ## Front end
 
@@ -36,9 +36,9 @@ Nine pages, static HTML/CSS/JS with mock data (no backend required, per the proj
 - **Return Book** - pick an active loan, see the fine calculation, confirm the return (FR-08, FR-15, FR-16)
 - **Librarian Dashboard** - pending borrow requests with persistent confirm/reject, overdue report with fines, full catalog management (add, update, remove books, register copies), member suspension, reservation queues (FR-12 to FR-18)
 - **Login / Register** - real credential check against the demo accounts in `docs/js/accounts.js` (static demo, so the check runs in the browser). Wrong password does not log in. Each role gets its own navigation and dashboard. New members can register.
-- **Members** (librarian only) - list of members, suspend/reactivate, promote a member to librarian
+- **Members** (librarian only) - list of members, suspend/reactivate, promote a member to librarian, remove a member (FR-17, FR-19)
 
-**Demo accounts:** librarian `hassan@gmail.com` / `12345678`; members `sara.m@example.com` / `sara1234`, `omar.k@example.com` / `omar1234`, `hassan.ashraf@example.com` / `member101`.
+**Demo accounts:** librarian `hassan@gmail.com` / `12345678`; members `sara.m@example.com` / `sara1234`, `omar.k@example.com` / `omar1234`, `mona.s@example.com` / `mona1234` (no loans, can be removed), `hassan.ashraf@example.com` / `member101`.
 
 ### Run it
 

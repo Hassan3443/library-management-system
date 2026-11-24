@@ -51,7 +51,7 @@ abstract class User {
   # email : String
   # passwordHash : String
   --
-  + login() : boolean       <<FR-02>>
+  + login(email, password) : boolean  <<FR-02>>
   + logout()                <<FR-02>>
 }
 class Member {
@@ -82,6 +82,8 @@ class Librarian {
   + calculateFine(loan : Loan) : Fine        <<FR-16>>
   + viewMembers() : List                     <<FR-17>>
   + suspendMember(member : Member)           <<FR-17>>
+  + promoteMember(member : Member)           <<FR-17>>
+  + removeMember(member : Member)            <<FR-19>>
   + viewReservationQueue(book : Book) : List <<FR-18>>
   + notifyNextMember(book : Book)            <<FR-18>>
 }
