@@ -525,6 +525,9 @@ function renderLoginPage() {
     document.getElementById("login-msg").innerHTML =
       `<div class="notice ok">Already logged in as ${esc(acc0.name)} (${r}). Go to your <a href="${HOME_BY_ROLE[r]}">${r} dashboard</a>.</div>`;
   }
+  document.getElementById("google-btn-reg").addEventListener("click", () => {
+    document.getElementById("register-msg").innerHTML = `<div class="notice">Google sign-up is not available yet. Please register with your email and password.</div>`;
+  });
   document.getElementById("login-form").addEventListener("submit", e => {
     e.preventDefault();
     const email = document.getElementById("lemail").value.trim().toLowerCase();
