@@ -725,7 +725,7 @@ form.inline .btn { min-height: 44px; }
   --font-body:    "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono:    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
-body { font-feature-settings: "cv05" 0; -webkit-font-smoothing: antialiased; letter-spacing: 0; }
+body { -webkit-font-smoothing: antialiased; letter-spacing: 0; }
 h1 { font-weight: 600; letter-spacing: -.035em; line-height: 1.1; }
 .hero h1 { font-weight: 600; letter-spacing: -.045em; line-height: 1.06; }
 h2 { font-weight: 600; letter-spacing: -.025em; }
