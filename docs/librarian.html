@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=14">
+  <link rel="stylesheet" href="css/style.css?v=15">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -30,7 +30,7 @@
   </header>
   <main id="main">
     <h1>Librarian Dashboard</h1>
-    <p class="subtitle">Catalog, copies, borrow requests, returns, overdue fines, members and reservations.</p>
+    <p class="subtitle">Catalog, copies, borrow requests, overdue loans and reservations. Members are on the <a href="members.html">Members page</a>.</p>
     <div id="notice"></div>
     <section class="grid cols-4" id="stats"></section>
 
@@ -69,14 +69,6 @@
       </table>
     </div>
 
-    <h2>Members</h2>
-    <div class="card" style="padding:0; overflow:auto">
-      <table>
-        <thead><tr><th>Member</th><th>Email</th><th>Active loans</th><th>Unpaid fines</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody id="members"></tbody>
-      </table>
-    </div>
-
     <h2>Reservation queues</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
@@ -86,8 +78,9 @@
     </div>
   </main>
   <footer class="site-footer">Library Management System - SA1</footer>
-  <script src="js/data.js?v=14"></script>
-  <script src="js/app.js?v=14"></script>
+  <script src="js/data.js?v=15"></script>
+  <script src="js/accounts.js?v=15"></script>
+  <script src="js/app.js?v=15"></script>
   <script>renderLibrarianDashboard();</script>
 </body>
 </html>

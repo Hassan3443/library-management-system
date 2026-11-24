@@ -16,7 +16,7 @@ function loadState() {
 function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
 const STATE = Object.assign(
   { addedBooks: [], removedBookIds: [], updatedBooks: {}, addedCopies: {},
-    decisions: {}, suspended: {}, user: null },
+    decisions: {}, suspended: {}, user: null, accounts: [], addedMembers: [], promoted: {} },
   loadState()
 );
 
@@ -35,17 +35,35 @@ const STATE = Object.assign(
     if (b) STATE.addedCopies[id].forEach(c => { if (!b.copies.some(x => x.id === c.id)) b.copies.push(c); });
   });
   STATE.addedBooks.forEach(b => { if (!bookById(b.id)) BOOKS.push(b); });
+  STATE.addedMembers.forEach(m => { if (!MEMBERS.some(x => x.id === m.id)) MEMBERS.push(m); });
   MEMBERS.forEach(m => { if (m.id in STATE.suspended) m.suspended = STATE.suspended[m.id]; });
 })();
+
+/* ---------- Accounts and session (credentials checked against ACCOUNTS + registered accounts) ---------- */
+function allAccounts() { return ACCOUNTS.concat(STATE.accounts); }
+function accountRole(acc) {
+  return (acc.role === "librarian" || (acc.memberId && STATE.promoted[acc.memberId])) ? "librarian" : "member";
+}
+function currentAccount() {
+  if (!STATE.user || !STATE.user.email) return null;
+  return allAccounts().find(a => a.email.toLowerCase() === STATE.user.email.toLowerCase()) || null;
+}
+function currentRole() { const a = currentAccount(); return a ? accountRole(a) : "guest"; }
+function currentMember() {
+  const a = currentAccount();
+  return (a && a.memberId && MEMBERS.find(m => m.id === a.memberId)) || null;
+}
+if (STATE.user && !currentAccount()) { STATE.user = null; saveState(); }  /* drop sessions from older demo versions */
 
 /* Business rule: a member cannot place a borrow request while
    suspended, with an unpaid fine, or while holding 3 or more active loans. */
 function memberEligibility() {
   const reasons = [];
-  const record = MEMBERS.find(m => m.id === MEMBER.id);
+  const record = currentMember();
+  const myId = record ? record.id : -1;
   if (record && record.suspended) reasons.push("the member account is suspended");
-  if (FINES.some(f => !f.paid)) reasons.push("there is an unpaid fine on the member account");
-  const active = LOANS.filter(l => !l.returnDate).length;
+  if (FINES.some(f => f.memberId === myId && !f.paid)) reasons.push("there is an unpaid fine on the member account");
+  const active = LOANS.filter(l => l.memberId === myId && !l.returnDate).length;
   if (active >= 3) reasons.push("the member already holds " + active + " active loans (limit 3)");
   return { ok: reasons.length === 0, reasons: reasons };
 }
@@ -110,7 +128,9 @@ function renderBookDetails() {
   }
   const nAvail = availableCopies(b);
   const queue = RESERVATIONS.filter(r => r.bookId === b.id);
-  const elig = memberEligibility();
+  const role = currentRole();
+  const canAct = role === "member";
+  const elig = canAct ? memberEligibility() : { ok: false, reasons: [] };
   main.innerHTML = `
     <p class="subtitle"><a href="catalog.html">&larr; Back to catalog</a></p>
     <div class="card">
@@ -119,10 +139,11 @@ function renderBookDetails() {
       <p>${nAvail > 0
         ? `<span class="badge ok">${nAvail} of ${b.copies.length} copies available</span>`
         : `<span class="badge warn">All copies on loan</span>`}</p>
-      <div style="margin-top:18px">
+      <div style="margin-top:18px" ${canAct ? "" : "hidden"}>
         <button class="btn" id="borrow" ${nAvail && elig.ok ? "" : "disabled"}>Request to borrow</button>
         <button class="btn secondary" id="reserve" ${nAvail ? "disabled" : ""}>Reserve this book</button>
       </div>
+      ${canAct ? "" : `<p class="book-meta">${role === "guest" ? 'Log in as a member to borrow or reserve this book. <a href="login.html">Log in</a>' : "Librarians manage copies and requests from the Librarian Dashboard."}</p>`}
       <div id="action-result" style="margin-top:14px"></div>
     </div>
     <h2>Copies</h2>
@@ -137,7 +158,7 @@ function renderBookDetails() {
     ${queue.length ? `<h2>Reservation queue</h2>
     <div class="card"><p>${queue.length} member(s) waiting. First in queue: ${esc(queue[0].memberName)} (since ${esc(queue[0].date)}).</p></div>` : ""}
   `;
-  if (!elig.ok) {
+  if (canAct && !elig.ok) {
     document.getElementById("action-result").innerHTML =
       `<div class="notice">Borrowing is blocked for this member: ${elig.reasons.join("; ")}.
        Resolve this on the <a href="member.html">member dashboard</a> first.</div>`;
@@ -160,10 +181,11 @@ function renderBookDetails() {
 
 /* ---------- Member Dashboard ---------- */
 function renderMemberDashboard() {
-  const mine = LOANS.filter(l => !l.returnDate);
+  const MEMBER = currentMember() || { id: -1, name: STATE.user.name || "Member", email: STATE.user.email, joinDate: TODAY };
+  const mine = LOANS.filter(l => l.memberId === MEMBER.id && !l.returnDate);
   document.getElementById("profile").innerHTML = `
     <strong>${esc(MEMBER.name)}</strong> (${esc(MEMBER.email)})<br>
-    <span class="book-meta">Member since ${MEMBER.joinDate} - ${mine.length} active loans</span>`;
+    <span class="book-meta">Member since ${MEMBER.joinDate || TODAY} - ${mine.length} active loans</span>`;
 
   const notices = [];
   mine.forEach(l => {
@@ -187,7 +209,7 @@ function renderMemberDashboard() {
       <td><a class="btn small secondary" href="return.html">Return</a></td></tr>`;
   }).join("");
 
-  document.getElementById("fines").innerHTML = FINES.map(f => {
+  document.getElementById("fines").innerHTML = FINES.filter(f => f.memberId === MEMBER.id).map(f => {
     const l = LOANS.find(x => x.id === f.loanId);
     const b = bookById(l.bookId);
     return `<tr><td>#${f.id}</td><td>"${esc(b.title)}" (loan #${l.id})</td><td>${f.overdueDays}</td>
@@ -203,7 +225,8 @@ function renderMemberDashboard() {
 
 /* ---------- Borrowing History ---------- */
 function renderHistory() {
-  document.getElementById("history").innerHTML = LOANS.slice().reverse().map(l => {
+  const me = currentMember();
+  document.getElementById("history").innerHTML = LOANS.filter(l => me && l.memberId === me.id).slice().reverse().map(l => {
     const b = bookById(l.bookId);
     const fine = l.returnDate ? loanFine(l) : 0;
     return `<tr><td>#${l.id}</td>
@@ -217,10 +240,17 @@ function renderHistory() {
 /* ---------- Return Book ---------- */
 function renderReturnPage() {
   const sel = document.getElementById("loan");
-  const mine = LOANS.filter(l => !l.returnDate);
+  const isLib = currentRole() === "librarian";
+  const meM = currentMember();
+  const mine = LOANS.filter(l => !l.returnDate && (isLib || (meM && l.memberId === meM.id)));
+  if (isLib) {
+    document.querySelector("h1").textContent = "Process Returns";
+    document.querySelector(".subtitle").textContent = "Pick a returned loan, check the due date and fine, then confirm the return.";
+  }
   sel.innerHTML = mine.map(l => {
     const b = bookById(l.bookId);
-    return `<option value="${l.id}">"${esc(b.title)}" (copy ${esc(l.copyId)}, due ${l.dueDate})</option>`;
+    const who = isLib ? (MEMBERS.find(m => m.id === l.memberId) || {}).name + ": " : "";
+    return `<option value="${l.id}">${esc(who)}"${esc(b.title)}" (copy ${esc(l.copyId)}, due ${l.dueDate})</option>`;
   }).join("");
   document.getElementById("rdate").value = TODAY;
 
@@ -395,26 +425,6 @@ function renderLibrarianDashboard() {
     }
   });
 
-  /* Member management: suspend/reactivate is functional and persists. */
-  const memEl = document.getElementById("members");
-  function drawMembers() {
-    memEl.innerHTML = MEMBERS.map(m =>
-      `<tr><td><div class="book-title">${esc(m.name)}</div></td><td>${esc(m.email)}</td>
-       <td>${m.activeLoans}</td><td>${m.unpaidFines ? m.unpaidFines + " EGP" : "-"}</td>
-       <td>${m.suspended ? '<span class="badge danger">Suspended</span>' : '<span class="badge ok">Active</span>'}</td>
-       <td><button class="btn small secondary" data-member="${m.id}">${m.suspended ? "Reactivate" : "Suspend"}</button></td></tr>`).join("");
-  }
-  drawMembers();
-  memEl.addEventListener("click", e => {
-    const btn = e.target.closest("button[data-member]");
-    if (!btn) return;
-    const m = MEMBERS.find(x => x.id === Number(btn.dataset.member));
-    m.suspended = !m.suspended;
-    STATE.suspended[m.id] = m.suspended;
-    saveState();
-    drawMembers();
-  });
-
   document.getElementById("reservations").innerHTML = RESERVATIONS.map(r => {
     const b = bookById(r.bookId);
     return `<tr><td><div class="book-title">${esc(b.title)}</div></td><td>${esc(r.memberName)}</td>
@@ -422,29 +432,82 @@ function renderLibrarianDashboard() {
   }).join("");
 }
 
+
+/* ---------- Members page (librarian only): suspend, promote to librarian ---------- */
+function renderMembersPage() {
+  const memEl = document.getElementById("members");
+  const staffEl = document.getElementById("staff");
+  function draw() {
+    memEl.innerHTML = MEMBERS.map(m => {
+      const acc = allAccounts().find(x => x.memberId === m.id);
+      const isLib = acc && STATE.promoted[m.id];
+      const loans = LOANS.filter(l => l.memberId === m.id && !l.returnDate).length;
+      const fines = FINES.filter(f => f.memberId === m.id && !f.paid).reduce((s, f) => s + f.amount, 0);
+      return `<tr><td><div class="book-title">${esc(m.name)}</div></td><td>${esc(m.email)}</td>
+       <td>${loans}</td><td>${fines ? fines + " EGP" : "-"}</td>
+       <td>${m.suspended ? '<span class="badge danger">Suspended</span>' : '<span class="badge ok">Active</span>'}${isLib ? ' <span class="badge info">Librarian</span>' : ""}</td>
+       <td><button class="btn small secondary" data-suspend="${m.id}">${m.suspended ? "Reactivate" : "Suspend"}</button>
+       ${acc && !isLib ? `<button class="btn small" data-promote="${m.id}">Make librarian</button>` : ""}
+       ${isLib ? `<button class="btn small danger" data-demote="${m.id}">Remove librarian role</button>` : ""}</td></tr>`;
+    }).join("");
+    staffEl.innerHTML = allAccounts().filter(x => accountRole(x) === "librarian").map(x =>
+      `<tr><td><div class="book-title">${esc(x.name)}</div></td><td>${esc(x.email)}</td>
+       <td>${x.role === "librarian" ? "Librarian" : "Promoted member"}</td></tr>`).join("");
+  }
+  draw();
+  memEl.addEventListener("click", e => {
+    const s = e.target.closest("button[data-suspend]");
+    const p = e.target.closest("button[data-promote]");
+    const d = e.target.closest("button[data-demote]");
+    if (s) {
+      const m = MEMBERS.find(x => x.id === Number(s.dataset.suspend));
+      m.suspended = !m.suspended;
+      STATE.suspended[m.id] = m.suspended;
+    } else if (p) {
+      STATE.promoted[Number(p.dataset.promote)] = true;
+    } else if (d) {
+      delete STATE.promoted[Number(d.dataset.demote)];
+    } else return;
+    saveState();
+    draw();
+  });
+}
+
 /* ---------- Login / Register ---------- */
 const HOME_BY_ROLE = { member: "member.html", librarian: "librarian.html" };
-function roleOf(u) { return u && u.role === "librarian" ? "librarian" : "member"; }
 function renderLoginPage() {
-  const who = STATE.user;
-  if (who) {
-    const r = roleOf(who);
+  const acc0 = currentAccount();
+  if (acc0) {
+    const r = accountRole(acc0);
     document.getElementById("login-msg").innerHTML =
-      `<div class="notice ok">Already logged in as ${esc(who.name)} (${r}). Go to your <a href="${HOME_BY_ROLE[r]}">${r} dashboard</a>.</div>`;
+      `<div class="notice ok">Already logged in as ${esc(acc0.name)} (${r}). Go to your <a href="${HOME_BY_ROLE[r]}">${r} dashboard</a>.</div>`;
   }
   document.getElementById("login-form").addEventListener("submit", e => {
     e.preventDefault();
-    const email = document.getElementById("lemail").value.trim();
-    const role = document.querySelector('input[name="role"]:checked').value;
-    STATE.user = { name: email.split("@")[0], email: email, role: role };
+    const email = document.getElementById("lemail").value.trim().toLowerCase();
+    const pass = document.getElementById("lpass").value;
+    const acc = allAccounts().find(a => a.email.toLowerCase() === email && a.password === pass);
+    if (!acc) {
+      document.getElementById("login-msg").innerHTML = `<div class="notice">Wrong email or password.</div>`;
+      return;
+    }
+    STATE.user = { email: acc.email, name: acc.name };
     saveState();
-    window.location.href = HOME_BY_ROLE[role];
+    window.location.href = HOME_BY_ROLE[accountRole(acc)];
   });
   document.getElementById("register-form").addEventListener("submit", e => {
     e.preventDefault();
     const name = document.getElementById("rname").value.trim();
-    const email = document.getElementById("remail").value.trim();
-    STATE.user = { name: name, email: email, role: "member" };
+    const email = document.getElementById("remail").value.trim().toLowerCase();
+    const pass = document.getElementById("rpass").value;
+    const msg = document.getElementById("register-msg");
+    if (pass.length < 6) { msg.innerHTML = `<div class="notice">Password must be at least 6 characters.</div>`; return; }
+    if (allAccounts().some(a => a.email.toLowerCase() === email)) { msg.innerHTML = `<div class="notice">An account with this email already exists.</div>`; return; }
+    const id = 200 + STATE.addedMembers.length;
+    const rec = { id: id, name: name, email: email, joinDate: TODAY, activeLoans: 0, unpaidFines: 0, suspended: false };
+    STATE.addedMembers.push(rec);
+    STATE.accounts.push({ email: email, password: pass, name: name, role: "member", memberId: id });
+    STATE.user = { email: email, name: name };
     saveState();
     window.location.href = HOME_BY_ROLE.member;
   });
@@ -564,12 +627,12 @@ addEventListener('keydown', function (e) {
     member: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["member.html", "My Dashboard"],
              ["history.html", "Borrowing History"], ["return.html", "Return Book"]],
     librarian: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["librarian.html", "Librarian Dashboard"],
-                ["return.html", "Process Returns"]]
+                ["members.html", "Members"], ["return.html", "Process Returns"]]
   };
-  const role = STATE.user ? roleOf(STATE.user) : "guest";
+  const role = currentRole();
   const page = location.pathname.split("/").pop() || "index.html";
   const ALLOWED = { "member.html": ["member"], "history.html": ["member"],
-                    "librarian.html": ["librarian"], "return.html": ["member", "librarian"] };
+                    "librarian.html": ["librarian"], "members.html": ["librarian"], "return.html": ["member", "librarian"] };
   if (ALLOWED[page] && !ALLOWED[page].includes(role)) {
     document.documentElement.style.display = "none";
     window.location.replace(role === "guest" ? "login.html" : HOME_BY_ROLE[role]);

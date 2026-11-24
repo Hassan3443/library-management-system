@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="City Library: browse the catalog, borrow and return books, track due dates and fines. A front-end demo for the SA1 Library Management System project.">
+  <meta name="theme-color" content="#16302b">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Crect width=%27100%27 height=%27100%27 rx=%2718%27 fill=%27%2316302b%27/%3E%3Crect x=%2728%27 y=%2720%27 width=%2712%27 height=%2760%27 rx=%272%27 fill=%27%23b9882f%27/%3E%3Crect x=%2746%27 y=%2720%27 width=%2712%27 height=%2760%27 rx=%272%27 fill=%27%23f6f2ea%27/%3E%3Crect x=%2764%27 y=%2726%27 width=%2710%27 height=%2754%27 rx=%272%27 fill=%27%23b9882f%27 transform=%27rotate(8 64 26)%27/%3E%3C/svg%3E">
+  <title>City Library - Members</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=15">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html">City<span>Library</span></a>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="catalog.html">Book Catalog</a>
+        <a href="member.html">Member Dashboard</a>
+        <a href="history.html">Borrowing History</a>
+        <a href="return.html">Return Book</a>
+        <a href="librarian.html" class="active" aria-current="page">Librarian Dashboard</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <h1>Members</h1>
+    <p class="subtitle">All library members. Suspend or reactivate an account, or give a member the librarian role.</p>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th>Member</th><th>Email</th><th>Active loans</th><th>Unpaid fines</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="members"></tbody>
+      </table>
+    </div>
+    <h2>Librarians</h2>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+        <tbody id="staff"></tbody>
+      </table>
+    </div>
+  </main>
+  <footer class="site-footer">Library Management System - SA1</footer>
+  <script src="js/data.js?v=15"></script>
+  <script src="js/accounts.js?v=15"></script>
+  <script src="js/app.js?v=15"></script>
+  <script>renderMembersPage();</script>
+</body>
+</html>

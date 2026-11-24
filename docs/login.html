@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=14">
+  <link rel="stylesheet" href="css/style.css?v=15">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -30,7 +30,7 @@
   </header>
   <main id="main">
     <h1>Login and Registration</h1>
-    <p class="subtitle">Register as a new member, or log in as a member or a librarian. Each role opens its own dashboard. Demo: no real authentication, any values work.</p>
+    <p class="subtitle">Log in with your account, or register as a new member. Your role (member or librarian) decides which dashboard opens.</p>
     <div class="grid cols-3" style="grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));">
       <div class="card">
         <h2 style="margin-top:0">Log in</h2>
@@ -39,12 +39,8 @@
           <input type="email" id="lemail" required placeholder="you@example.com" style="margin-bottom:12px">
           <label for="lpass">Password</label>
           <input type="password" id="lpass" required placeholder="Password" style="margin-bottom:16px">
-          <fieldset style="border:0;padding:0;margin:0 0 16px">
-            <legend style="font-weight:600;margin-bottom:6px">Log in as</legend>
-            <label style="display:inline-flex;gap:6px;margin-right:16px"><input type="radio" name="role" value="member" checked> Member</label>
-            <label style="display:inline-flex;gap:6px"><input type="radio" name="role" value="librarian"> Librarian</label>
-          </fieldset>
           <button class="btn" type="submit">Log in</button>
+          <p class="book-meta" style="margin-top:10px">Demo accounts are listed in <code>docs/js/accounts.js</code>.</p>
         </form>
         <div id="login-msg" style="margin-top:12px"></div>
       </div>
@@ -64,8 +60,9 @@
     </div>
   </main>
   <footer class="site-footer">Library Management System - SA1</footer>
-  <script src="js/data.js?v=14"></script>
-  <script src="js/app.js?v=14"></script>
+  <script src="js/data.js?v=15"></script>
+  <script src="js/accounts.js?v=15"></script>
+  <script src="js/app.js?v=15"></script>
   <script>renderLoginPage();</script>
 </body>
 </html>

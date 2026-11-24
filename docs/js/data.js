@@ -28,20 +28,24 @@ const BOOKS = [
     copies: [ { id: "C12-1", status: "available", location: "Shelf A2" } ] }
 ];
 
-const MEMBER = { id: 101, name: "Hassan Ali", email: "hassan.ali@example.com", joinDate: "2025-09-14", active: true };
 
 /* Loan period is 14 days. Fine = 5 EGP per overdue day. */
 const LOANS = [
-  { id: 501, bookId: 2, copyId: "C2-1", borrowDate: "2026-10-20", dueDate: "2026-11-03", returnDate: null, status: "overdue" },
-  { id: 502, bookId: 6, copyId: "C6-1", borrowDate: "2026-11-12", dueDate: "2026-11-26", returnDate: null, status: "active" },
-  { id: 503, bookId: 9, copyId: "C9-1", borrowDate: "2026-11-15", dueDate: "2026-11-29", returnDate: null, status: "active" },
-  { id: 498, bookId: 3, copyId: "C3-1", borrowDate: "2026-09-01", dueDate: "2026-09-15", returnDate: "2026-09-12", status: "returned" },
-  { id: 492, bookId: 7, copyId: "C7-1", borrowDate: "2026-08-10", dueDate: "2026-08-24", returnDate: "2026-08-30", status: "returned" },
-  { id: 487, bookId: 5, copyId: "C5-1", borrowDate: "2026-07-05", dueDate: "2026-07-19", returnDate: "2026-07-18", status: "returned" }
+  { memberId: 101, id: 501, bookId: 2, copyId: "C2-1", borrowDate: "2026-10-20", dueDate: "2026-11-03", returnDate: null, status: "overdue" },
+  { memberId: 101, id: 502, bookId: 6, copyId: "C6-1", borrowDate: "2026-11-12", dueDate: "2026-11-26", returnDate: null, status: "active" },
+  { memberId: 101, id: 503, bookId: 9, copyId: "C9-1", borrowDate: "2026-11-15", dueDate: "2026-11-29", returnDate: null, status: "active" },
+  { memberId: 101, id: 498, bookId: 3, copyId: "C3-1", borrowDate: "2026-09-01", dueDate: "2026-09-15", returnDate: "2026-09-12", status: "returned" },
+  { memberId: 101, id: 492, bookId: 7, copyId: "C7-1", borrowDate: "2026-08-10", dueDate: "2026-08-24", returnDate: "2026-08-30", status: "returned" },
+  { memberId: 101, id: 487, bookId: 5, copyId: "C5-1", borrowDate: "2026-07-05", dueDate: "2026-07-19", returnDate: "2026-07-18", status: "returned" },
+  { memberId: 104, id: 504, bookId: 2, copyId: "C2-2", borrowDate: "2026-11-16", dueDate: "2026-11-30", returnDate: null, status: "active" },
+  { memberId: 108, id: 505, bookId: 1, copyId: "C1-2", borrowDate: "2026-11-14", dueDate: "2026-11-28", returnDate: null, status: "active" },
+  { memberId: 108, id: 506, bookId: 9, copyId: "C9-2", borrowDate: "2026-11-15", dueDate: "2026-11-29", returnDate: null, status: "active" },
+  { memberId: 108, id: 493, bookId: 12, copyId: "C12-1", borrowDate: "2026-08-01", dueDate: "2026-08-15", returnDate: "2026-08-24", status: "returned" }
 ];
 
 const FINES = [
-  { id: 301, loanId: 492, overdueDays: 6, amount: 30, paid: false }
+  { id: 301, memberId: 101, loanId: 492, overdueDays: 6, amount: 30, paid: false },
+  { id: 302, memberId: 108, loanId: 493, overdueDays: 9, amount: 45, paid: false }
 ];
 
 const PENDING_REQUESTS = [
@@ -50,12 +54,12 @@ const PENDING_REQUESTS = [
 ];
 
 const RESERVATIONS = [
-  { id: 701, memberId: 101, memberName: "Hassan Ali", bookId: 9, date: "2026-11-18", queuePosition: 1 },
+  { id: 701, memberId: 101, memberName: "Hassan Ashraf", bookId: 9, date: "2026-11-18", queuePosition: 1 },
   { id: 702, memberId: 104, memberName: "Sara Mahmoud", bookId: 2, date: "2026-11-19", queuePosition: 1 }
 ];
 
 const MEMBERS = [
-  { id: 101, name: "Hassan Ali", email: "hassan.ali@example.com", activeLoans: 3, unpaidFines: 30, suspended: false },
+  { id: 101, name: "Hassan Ashraf", email: "hassan.ashraf@example.com", activeLoans: 3, unpaidFines: 30, suspended: false },
   { id: 104, name: "Sara Mahmoud", email: "sara.m@example.com", activeLoans: 1, unpaidFines: 0, suspended: false },
   { id: 108, name: "Omar Khaled", email: "omar.k@example.com", activeLoans: 2, unpaidFines: 45, suspended: true }
 ];
