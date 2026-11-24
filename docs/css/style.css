@@ -721,17 +721,17 @@ form.inline .btn { min-height: 44px; }
    F. TYPE: Geist
    ========================================================= */
 :root {
-  --font-display: "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-body:    "Geist", "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono:    "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-body:    "Inter", "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:    ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
-body { font-feature-settings: "ss01", "cv11"; -webkit-font-smoothing: antialiased; letter-spacing: -.003em; }
+body { font-feature-settings: "cv05" 0; -webkit-font-smoothing: antialiased; letter-spacing: 0; }
 h1 { font-weight: 600; letter-spacing: -.035em; line-height: 1.1; }
 .hero h1 { font-weight: 600; letter-spacing: -.045em; line-height: 1.06; }
 h2 { font-weight: 600; letter-spacing: -.025em; }
 .feat-body h3 { font-weight: 600; letter-spacing: -.02em; }
 .brand { font-weight: 600; letter-spacing: -.02em; }
-.brand span { font-style: normal; font-weight: 500; }        /* Geist has no italic */
+.brand span { font-style: normal; font-weight: 500; }
 .book-title { font-weight: 600; letter-spacing: -.01em; }
 .stat .num, td { font-variant-numeric: tabular-nums; }
 .btn { letter-spacing: 0; }
