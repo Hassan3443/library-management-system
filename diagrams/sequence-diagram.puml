@@ -5,6 +5,7 @@ skinparam sequenceMessageAlign center
 autonumber "<b>00"
 
 actor "Member" as M
+participant ":Member" as MO
 participant ":Book" as B
 participant ":BookCopy" as C
 participant ":Loan" as L
@@ -17,7 +18,9 @@ B -> B : getAvailableCopies()
 B --> M : details + availability
 deactivate B
 
-M -> L : requestBorrow(book)  (FR-05)
+M -> MO : requestBorrow(book)  (FR-05)
+activate MO
+MO -> L : create Loan(member, book)
 activate L
 L -> F : unpaid fines for member?
 F --> L : none / unpaid
@@ -26,7 +29,8 @@ alt member eligible and a copy is available
   L -> C : find an AVAILABLE copy
   C --> L : copy
   L -> L : status = PENDING
-  L --> M : request submitted
+  L --> MO : loan (PENDING)
+  MO --> M : request submitted
   L --> LB : new pending request
   deactivate L
   LB -> L : confirmBorrowRequest(loan)  (FR-14)
@@ -36,10 +40,12 @@ alt member eligible and a copy is available
   L -> C : markOnLoan()
   C --> L : status = ON_LOAN
   L --> M : loan confirmed with due date
-else not eligible (unpaid fine or 3 active loans)
-  L --> M : request rejected with reason
+else not eligible (unpaid fine or 3 active loans) or no copy available
+  L --> MO : rejected with reason
+  MO --> M : request rejected with reason
 end
 deactivate L
+deactivate MO
 
 note over M, LB
   Return (FR-08 initiateReturn, FR-15 processReturn, FR-16 fine)

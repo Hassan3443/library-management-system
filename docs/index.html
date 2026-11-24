@@ -88,6 +88,7 @@
   </main>
   <footer class="site-footer">Library Management System - Information Systems Analysis and Design 1 (SA1)</footer>
   <script src="js/data.js?v=13"></script>
+  <script src="js/app.js?v=13"></script>
   <script>
     const activeLoans = LOANS.filter(l => !l.returnDate).length;
     const overdue = LOANS.filter(l => !l.returnDate && l.status === "overdue").length;
