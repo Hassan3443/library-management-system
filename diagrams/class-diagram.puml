@@ -80,6 +80,7 @@ class Librarian {
   + processReturn(loan : Loan)               <<FR-15>>
   + identifyOverdueLoans() : List            <<FR-16>>
   + calculateFine(loan : Loan) : Fine        <<FR-16>>
+  + viewMembers() : List                     <<FR-17>>
   + suspendMember(member : Member)           <<FR-17>>
   + viewReservationQueue(book : Book) : List <<FR-18>>
   + notifyNextMember(book : Book)            <<FR-18>>
@@ -136,6 +137,12 @@ Book "1" -- "0..*" Reservation : reserved for
 BookCopy ..> CopyStatus
 Loan ..> LoanStatus
 Reservation ..> ReservationStatus
+
+note right of Librarian
+  FR-16 "automatically": identifyOverdueLoans() is a
+  scheduled check run on behalf of the librarian role
+  (the system triggers it, no manual action needed).
+end note
 
 note bottom of Fine
   Business rule: 5 EGP per overdue day.

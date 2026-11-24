@@ -38,7 +38,10 @@ digraph DFD1 {
 
   M -> P3 [label="borrow request"];
   P3 -> M [label="request status"];
-  D3 -> P3 [label="eligibility\n(fines, loans)"];
+  D3 -> P3 [label="member status"];
+  D5 -> P3 [label="unpaid fines"];
+  D4 -> P3 [label="active loans"];
+  P3 -> D4 [label="pending request"];
   P3 -> L [label="pending requests"];
   L -> P3 [label="confirm / reject"];
   P3 -> P4 [label="approved request"];
@@ -55,6 +58,7 @@ digraph DFD1 {
   P5 -> D5 [label="fine record"];
   P5 -> D7 [label="overdue /\ndue-date notice"];
   P5 -> L [label="overdue report"];
+  P5 -> M [label="due-date /\noverdue notice"];
   D5 -> P5 [label="fine history"];
 
   M -> P6 [label="reservation request"];
@@ -62,7 +66,8 @@ digraph DFD1 {
   P6 -> D6 [label="queue entry"];
   D6 -> P6 [label="waiting queue"];
   P6 -> D7 [label="availability notice"];
-  D7 -> M [label="notifications"];
+  D7 -> P6 [label="stored notices"];
+  P6 -> M [label="notifications"];
   L -> P6 [label="view queue"];
 
   L -> P7 [label="book / copy changes"];

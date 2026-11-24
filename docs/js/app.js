@@ -554,3 +554,23 @@ addEventListener('keydown', function (e) {
   var s = document.getElementById('q');
   if (s) { e.preventDefault(); s.focus(); s.select(); }
 });
+
+
+/* ---------- Logout button in the header (FR-02) ---------- */
+(function () {
+  const wrap = document.querySelector(".main-nav");
+  if (!wrap) return;
+  const loginLink = wrap.querySelector('a[href="login.html"]');
+  if (!STATE.user) return;
+  const btn = document.createElement("a");
+  btn.href = "login.html";
+  btn.id = "logout-btn";
+  btn.textContent = "Logout (" + STATE.user.name + ")";
+  btn.addEventListener("click", e => {
+    e.preventDefault();
+    STATE.user = null;
+    saveState();
+    window.location.href = "login.html";
+  });
+  if (loginLink) loginLink.replaceWith(btn); else wrap.appendChild(btn);
+})();
