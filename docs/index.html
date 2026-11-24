@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=13">
+  <link rel="stylesheet" href="css/style.css?v=14">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -34,7 +34,7 @@
       <p>Search the catalog, check availability, borrow and return books, reserve titles that are
          on loan, and keep track of your due dates and fines, all in one place.</p>
       <a class="btn" href="catalog.html">Browse the catalog</a>
-      <a class="btn secondary" href="member.html">Go to my dashboard</a>
+      <a class="btn secondary" id="dash-link" href="login.html">Log in</a>
     </section>
 
     <section class="grid cols-4" id="stats"></section>
@@ -87,8 +87,8 @@
     </ol>
   </main>
   <footer class="site-footer">Library Management System - Information Systems Analysis and Design 1 (SA1)</footer>
-  <script src="js/data.js?v=13"></script>
-  <script src="js/app.js?v=13"></script>
+  <script src="js/data.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
   <script>
     const activeLoans = LOANS.filter(l => !l.returnDate).length;
     const overdue = LOANS.filter(l => !l.returnDate && l.status === "overdue").length;

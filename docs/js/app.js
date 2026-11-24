@@ -423,28 +423,30 @@ function renderLibrarianDashboard() {
 }
 
 /* ---------- Login / Register (FR-01, FR-02; mock, no real authentication) ---------- */
+const HOME_BY_ROLE = { member: "member.html", librarian: "librarian.html" };
+function roleOf(u) { return u && u.role === "librarian" ? "librarian" : "member"; }
 function renderLoginPage() {
   const who = STATE.user;
   if (who) {
+    const r = roleOf(who);
     document.getElementById("login-msg").innerHTML =
-      `<div class="notice ok">Already logged in as ${esc(who.name)} (${esc(who.email)}). Go to your <a href="member.html">member dashboard</a>.</div>`;
+      `<div class="notice ok">Already logged in as ${esc(who.name)} (${r}). Go to your <a href="${HOME_BY_ROLE[r]}">${r} dashboard</a>.</div>`;
   }
   document.getElementById("login-form").addEventListener("submit", e => {
     e.preventDefault();
     const email = document.getElementById("lemail").value.trim();
-    STATE.user = { name: email.split("@")[0], email: email };
+    const role = document.querySelector('input[name="role"]:checked').value;
+    STATE.user = { name: email.split("@")[0], email: email, role: role };
     saveState();
-    document.getElementById("login-msg").innerHTML =
-      `<div class="notice ok">Logged in as ${esc(email)}. Go to your <a href="member.html">member dashboard</a>.</div>`;
+    window.location.href = HOME_BY_ROLE[role];
   });
   document.getElementById("register-form").addEventListener("submit", e => {
     e.preventDefault();
     const name = document.getElementById("rname").value.trim();
     const email = document.getElementById("remail").value.trim();
-    STATE.user = { name: name, email: email };
+    STATE.user = { name: name, email: email, role: "member" };
     saveState();
-    document.getElementById("register-msg").innerHTML =
-      `<div class="notice ok">Account created for ${esc(name)} (${esc(email)}). Go to your <a href="member.html">member dashboard</a>.</div>`;
+    window.location.href = HOME_BY_ROLE.member;
   });
 }
 
@@ -555,22 +557,41 @@ addEventListener('keydown', function (e) {
   if (s) { e.preventDefault(); s.focus(); s.select(); }
 });
 
-
-/* ---------- Logout button in the header (FR-02) ---------- */
+/* ---------- Role-based navigation, page guard and logout (FR-02) ---------- */
 (function () {
-  const wrap = document.querySelector(".main-nav");
-  if (!wrap) return;
-  const loginLink = wrap.querySelector('a[href="login.html"]');
-  if (!STATE.user) return;
-  const btn = document.createElement("a");
-  btn.href = "login.html";
-  btn.id = "logout-btn";
-  btn.textContent = "Logout (" + STATE.user.name + ")";
-  btn.addEventListener("click", e => {
-    e.preventDefault();
-    STATE.user = null;
-    saveState();
-    window.location.href = "login.html";
-  });
-  if (loginLink) loginLink.replaceWith(btn); else wrap.appendChild(btn);
+  const NAV = {
+    guest: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["login.html", "Login"]],
+    member: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["member.html", "My Dashboard"],
+             ["history.html", "Borrowing History"], ["return.html", "Return Book"]],
+    librarian: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["librarian.html", "Librarian Dashboard"],
+                ["return.html", "Process Returns"]]
+  };
+  const role = STATE.user ? roleOf(STATE.user) : "guest";
+  const page = location.pathname.split("/").pop() || "index.html";
+  const ALLOWED = { "member.html": ["member"], "history.html": ["member"],
+                    "librarian.html": ["librarian"], "return.html": ["member", "librarian"] };
+  if (ALLOWED[page] && !ALLOWED[page].includes(role)) {
+    document.documentElement.style.display = "none";
+    window.location.replace(role === "guest" ? "login.html" : HOME_BY_ROLE[role]);
+    return;
+  }
+  const dl = document.getElementById("dash-link");
+  if (dl && role !== "guest") { dl.href = HOME_BY_ROLE[role]; dl.textContent = "Go to my dashboard"; }
+  const nav = document.querySelector(".main-nav");
+  if (!nav) return;
+  nav.innerHTML = NAV[role].map(([href, label]) =>
+    `<a href="${href}"${href === page ? ' class="active" aria-current="page"' : ""}>${label}</a>`).join("");
+  if (STATE.user) {
+    const btn = document.createElement("a");
+    btn.href = "login.html";
+    btn.id = "logout-btn";
+    btn.textContent = "Logout (" + STATE.user.name + ", " + role + ")";
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      STATE.user = null;
+      saveState();
+      window.location.href = "login.html";
+    });
+    nav.appendChild(btn);
+  }
 })();
