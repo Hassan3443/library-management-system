@@ -56,6 +56,6 @@ UC18 <-- L
 UC3 .> UC4 : <<include>>
 UC5 .> UC4 : <<include>>
 UC15 .> UC16 : <<include>>
-UC9 .> UC18 : <<extend>>
-UC16 .> UC11 : <<extend>>
+UC18 .> UC9 : <<extend>>
+UC11 .> UC16 : <<extend>>
 @enduml
