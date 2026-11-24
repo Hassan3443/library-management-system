@@ -15,11 +15,11 @@ The system helps librarians organize books, manage members, and track borrowing 
 | Deliverable | Location |
 | --- | --- |
 | Functional requirements (18) | [requirements/functional-requirements.md](requirements/functional-requirements.md) |
-| Data Flow Diagram | [diagrams/dfd.png](diagrams/dfd.png) ([source](diagrams/dfd.mmd)) |
-| Class Diagram | [diagrams/class-diagram.png](diagrams/class-diagram.png) ([source](diagrams/class-diagram.mmd)) |
-| Activity Diagram | [diagrams/activity-diagram.png](diagrams/activity-diagram.png) ([source](diagrams/activity-diagram.mmd)) |
-| Sequence Diagram | [diagrams/sequence-diagram.png](diagrams/sequence-diagram.png) ([source](diagrams/sequence-diagram.mmd)) |
-| Use Case Diagram | [diagrams/use-case-diagram.png](diagrams/use-case-diagram.png) ([source](diagrams/use-case-diagram.mmd)) |
+| Data Flow Diagram, Level 0 and Level 1 | [diagrams/dfd0.png](diagrams/dfd0.png), [diagrams/dfd1.png](diagrams/dfd1.png) |
+| Class Diagram | [diagrams/class-diagram.png](diagrams/class-diagram.png) ([source](diagrams/class-diagram.puml)) |
+| Activity Diagram | [diagrams/activity-diagram.png](diagrams/activity-diagram.png) ([source](diagrams/activity-diagram.puml)) |
+| Sequence Diagram | [diagrams/sequence-diagram.png](diagrams/sequence-diagram.png) ([source](diagrams/sequence-diagram.puml)) |
+| Use Case Diagram | [diagrams/use-case-diagram.png](diagrams/use-case-diagram.png) ([source](diagrams/use-case-diagram.puml)) |
 | Front end (8 pages) | [docs/](docs/) |
 
 All diagrams are consistent with one another and with the 18 functional requirements, and the front end demonstrates the same flows.
@@ -56,7 +56,7 @@ cd docs && python3 -m http.server 8000
 
 ## Diagram sources
 
-Diagrams are written in [Mermaid](https://mermaid.js.org/) (`diagrams/*.mmd`) and rendered to PNG for the report.
+Diagrams are written as code: [PlantUML](https://plantuml.com/) (`diagrams/*.puml`) for UML diagrams and [Graphviz](https://graphviz.org/) (`diagrams/*.dot`) for the data flow diagrams, rendered to PNG for the report.
 
 ## License
 

@@ -1,39 +1,42 @@
 # Diagrams
 
-All five diagrams describe the same system and the same 18 functional requirements
+All diagrams describe the same system and the same 18 functional requirements
 (see [requirements/functional-requirements.md](../requirements/functional-requirements.md)).
-Each diagram has its Mermaid source (`.mmd`) and a rendered image (`.png`).
+Sources are diagrams-as-code: PlantUML (`.puml`) for UML diagrams and Graphviz (`.dot`) for the DFDs.
+Each source has a rendered PNG next to it.
 
-## Data Flow Diagram (DFD)
-External entities (Member, Librarian), six processes (search/browse, borrow requests,
-loans and returns, overdue and fines, catalog and member management, reservations)
-and six data stores (D1 Books, D2 Book Copies, D3 Members, D4 Loans, D5 Fines, D6 Reservations).
+| Diagram | Covers | Source |
+| --- | --- | --- |
+| DFD Level 0 (context) | System boundary, 2 external entities | [dfd0.dot](dfd0.dot) |
+| DFD Level 1 | 8 processes, 7 data stores, all 18 requirements | [dfd1.dot](dfd1.dot) |
+| Class diagram | Every function FR-01 to FR-18 as an operation, tagged with its FR id | [class-diagram.puml](class-diagram.puml) |
+| Use case diagram | All 18 use cases, include/extend relations | [use-case-diagram.puml](use-case-diagram.puml) |
+| Activity diagram | Borrow and return workflow with swimlanes | [activity-diagram.puml](activity-diagram.puml) |
+| Sequence diagram | Search, borrow, return and fine scenarios | [sequence-diagram.puml](sequence-diagram.puml) |
 
-![Data Flow Diagram](dfd.png)
+## DFD Level 0
+![DFD Level 0](dfd0.png)
+
+## DFD Level 1
+![DFD Level 1](dfd1.png)
 
 ## Class Diagram
-Book, BookCopy, Member, Librarian, Loan, Fine and Reservation, with attributes,
-methods and relationships (composition, association, multiplicity).
-
 ![Class Diagram](class-diagram.png)
 
-## Activity Diagram
-The full borrow/return workflow: search, availability check, eligibility check,
-librarian confirmation, loan recording, return processing, fine calculation and
-reservation-queue notification.
+## Use Case Diagram
+![Use Case Diagram](use-case-diagram.png)
 
+## Activity Diagram
 ![Activity Diagram](activity-diagram.png)
 
 ## Sequence Diagram
-The borrow scenario (FR-03 -> FR-05 -> FR-14) and the return scenario with the
-overdue/fine alternative path, in chronological order between Member, Front End,
-System, Data Store and Librarian.
-
 ![Sequence Diagram](sequence-diagram.png)
 
-## Use Case Diagram
-Both actors and all 18 use cases, plus include/trigger relationships
-(borrow includes viewing availability; processing a return triggers fine calculation;
-reserving notifies the member).
+## Regenerate
 
-![Use Case Diagram](use-case-diagram.png)
+```bash
+cd diagrams
+java -jar plantuml.jar -tpng *.puml      # needs Graphviz installed
+dot -Tpng dfd0.dot -o dfd0.png
+dot -Tpng dfd1.dot -o dfd1.png
+```

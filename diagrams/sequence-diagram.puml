@@ -1,0 +1,66 @@
+@startuml
+!include _style.iuml
+title Library Management System: Borrow and Return Sequence Diagram
+skinparam sequenceMessageAlign center
+autonumber "<b>00"
+
+actor "Member" as M
+participant "Front End" as FE
+participant "Library System" as S
+database "Data Store" as DB
+actor "Librarian" as L
+
+== Search (FR-03, FR-04) ==
+M -> FE : search by title, author or category
+activate FE
+FE -> S : searchBooks(criteria)
+activate S
+S -> DB : query matching books
+DB --> S : books with copy availability
+S --> FE : search results
+deactivate S
+FE --> M : results with availability
+deactivate FE
+
+== Borrow request (FR-05, FR-14) ==
+M -> FE : submit borrow request
+activate FE
+FE -> S : requestBorrow(memberId, bookId)
+activate S
+S -> DB : check fines and active loans
+DB --> S : member status
+alt member eligible
+  S -> DB : create request (Pending)
+  S --> L : new request notification
+  deactivate S
+  L -> S : review and confirm
+  activate S
+  S -> DB : record loan (due date = +14 days)
+  S -> DB : copy status = On Loan
+  S --> FE : loan confirmed
+  FE --> M : loan with due date
+else not eligible
+  S --> FE : rejected with reason
+  FE --> M : show reason
+end
+deactivate S
+deactivate FE
+
+== Return (FR-08, FR-15, FR-16, FR-18) ==
+M -> L : hand back the book
+L -> S : processReturn(loanId)
+activate S
+S -> DB : set returnDate, copy = Available
+alt returned after due date
+  S -> S : fine = overdue days x 5 EGP
+  S -> DB : create Fine for member
+  S --> L : fine recorded
+else on time
+  S --> L : return completed
+end
+S -> DB : check reservation queue
+opt queue not empty
+  S --> M : notify next member in queue
+end
+deactivate S
+@enduml

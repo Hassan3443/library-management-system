@@ -1,0 +1,54 @@
+@startuml
+!include _style.iuml
+title Library Management System: Borrow and Return Activity Diagram
+
+|Member|
+start
+:Search for a book;
+:View details and availability;
+if (Copies available?) then (no)
+  :Reserve the book;
+  |System|
+  :Add member to reservation queue;
+  |Member|
+  stop
+else (yes)
+  :Submit borrow request;
+endif
+|System|
+if (Member eligible?\n(no unpaid fines, fewer than 3 active loans)) then (no)
+  :Reject request with reason;
+  |Member|
+  stop
+else (yes)
+endif
+|Librarian|
+:Review borrow request;
+if (Confirm request?) then (no)
+  |System|
+  :Reject request with reason;
+  |Member|
+  stop
+else (yes)
+endif
+|System|
+:Record loan (borrow date, due date = +14 days);
+:Mark copy as On Loan;
+|Member|
+:Borrow and read the book;
+:Initiate return;
+|Librarian|
+:Process returned book;
+|System|
+if (Returned after due date?) then (yes)
+  :Calculate fine\n(5 EGP x overdue days);
+  :Add fine to member account;
+else (no)
+endif
+:Mark copy as Available;
+if (Reservation queue waiting?) then (yes)
+  :Notify next member in queue;
+else (no)
+endif
+stop
+@enduml

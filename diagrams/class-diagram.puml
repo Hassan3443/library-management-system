@@ -1,0 +1,144 @@
+@startuml
+!include _style.iuml
+title Library Management System: Class Diagram
+hide empty members
+skinparam linetype ortho
+
+enum CopyStatus <<enumeration>> {
+  AVAILABLE
+  ON_LOAN
+  RESERVED
+  MAINTENANCE
+}
+enum LoanStatus <<enumeration>> {
+  PENDING
+  ACTIVE
+  RETURNED
+  OVERDUE
+  REJECTED
+}
+enum ReservationStatus <<enumeration>> {
+  WAITING
+  NOTIFIED
+  FULFILLED
+  CANCELLED
+}
+
+class Book {
+  - bookId : int
+  - title : String
+  - author : String
+  - category : String
+  - isbn : String
+  - publicationYear : int
+  --
+  + addCopy(copy : BookCopy)
+  + getAvailableCopies() : int
+  + updateDetails()
+}
+class BookCopy {
+  - copyId : int
+  - status : CopyStatus
+  - location : String
+  --
+  + markAvailable()
+  + markOnLoan()
+  + markReserved()
+}
+abstract class User {
+  # userId : int
+  # name : String
+  # email : String
+  # passwordHash : String
+  --
+  + login() : boolean       <<FR-02>>
+  + logout()                <<FR-02>>
+}
+class Member {
+  - joinDate : Date
+  - isActive : boolean
+  --
+  + register(name, email, password)          <<FR-01>>
+  + searchBooks(criteria) : List             <<FR-03>>
+  + viewBookDetails(book) : Book             <<FR-04>>
+  + requestBorrow(book : Book) : Loan        <<FR-05>>
+  + viewCurrentLoans() : List                <<FR-06>>
+  + viewHistory() : List                     <<FR-07>>
+  + initiateReturn(loan : Loan)              <<FR-08>>
+  + reserve(book : Book) : Reservation       <<FR-09>>
+  + viewFines() : List                       <<FR-10>>
+  + receiveNotification() : Notification     <<FR-11>>
+}
+class Librarian {
+  - employeeNo : int
+  --
+  + addBook(book : Book)                     <<FR-12>>
+  + updateBook(book : Book)                  <<FR-12>>
+  + removeBook(bookId : int)                 <<FR-12>>
+  + manageCopy(copy : BookCopy, s : CopyStatus) <<FR-13>>
+  + confirmBorrowRequest(loan : Loan)        <<FR-14>>
+  + processReturn(loan : Loan)               <<FR-15>>
+  + identifyOverdueLoans() : List            <<FR-16>>
+  + calculateFine(loan : Loan) : Fine        <<FR-16>>
+  + suspendMember(member : Member)           <<FR-17>>
+  + viewReservationQueue(book : Book) : List <<FR-18>>
+  + notifyNextMember(book : Book)            <<FR-18>>
+}
+class Notification {
+  - notificationId : int
+  - type : String
+  - message : String
+  - sentAt : Date
+  --
+  + send()
+}
+class Loan {
+  - loanId : int
+  - borrowDate : Date
+  - dueDate : Date
+  - returnDate : Date
+  - status : LoanStatus
+  --
+  + isOverdue() : boolean
+  + daysOverdue() : int
+  + close()
+}
+class Fine {
+  - fineId : int
+  - amount : float
+  - overdueDays : int
+  - isPaid : boolean
+  --
+  + calculate() : float
+  + markPaid()
+}
+class Reservation {
+  - reservationId : int
+  - reservationDate : Date
+  - queuePosition : int
+  - status : ReservationStatus
+  --
+  + notifyMember()
+  + cancel()
+}
+
+User <|-- Member
+User <|-- Librarian
+Member "1" -- "0..*" Notification : receives
+Book "1" *-- "1..*" BookCopy : has copies
+Member "1" -- "0..*" Loan : borrows
+BookCopy "1" -- "0..*" Loan : lent in
+Librarian "1" -- "0..*" Loan : confirms / processes
+Loan "1" -- "0..1" Fine : may incur
+Member "1" -- "0..*" Fine : owes
+Member "1" -- "0..*" Reservation : places
+Book "1" -- "0..*" Reservation : reserved for
+BookCopy ..> CopyStatus
+Loan ..> LoanStatus
+Reservation ..> ReservationStatus
+
+note bottom of Fine
+  Business rule: 5 EGP per overdue day.
+  Loan period: 14 days.
+end note
+@enduml

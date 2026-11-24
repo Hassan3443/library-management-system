@@ -1,0 +1,76 @@
+digraph DFD1 {
+  graph [rankdir=TB, splines=true, nodesep=0.5, ranksep=1.0, fontname="Helvetica", labelloc=t, fontsize=20, label="Library Management System: Data Flow Diagram, Level 1\n", dpi=90, pad=0.3, bgcolor=white];
+  node [fontname="Helvetica", fontsize=12];
+  edge [fontname="Helvetica", fontsize=10, color="#334155", fontcolor="#1e293b", arrowsize=0.7];
+
+  M [label="Library Member", shape=box, style="filled,bold", fillcolor="#fde68a", color="#92400e", margin="0.25,0.18"];
+  L [label="Librarian", shape=box, style="filled,bold", fillcolor="#fde68a", color="#92400e", margin="0.25,0.18"];
+
+  node [shape=circle, style=filled, fillcolor="#dbeafe", color="#1d4ed8", width=1.55, fixedsize=true, fontsize=11];
+  P1 [label="1.0\nRegister and\nAuthenticate"];
+  P2 [label="2.0\nSearch and\nView Books"];
+  P3 [label="3.0\nManage Borrow\nRequests"];
+  P4 [label="4.0\nProcess Loans\nand Returns"];
+  P5 [label="5.0\nTrack Overdue\nand Fines"];
+  P6 [label="6.0\nManage\nReservations"];
+  P7 [label="7.0\nManage Catalog\nand Copies"];
+  P8 [label="8.0\nManage Member\nAccounts"];
+
+  node [shape=box, style="filled", fillcolor="#f1f5f9", color="#334155", width=1.5, height=0.5, fixedsize=false, fontsize=11, margin="0.2,0.1"];
+  D1 [label="D1  Books"];
+  D2 [label="D2  Book Copies"];
+  D3 [label="D3  Members"];
+  D4 [label="D4  Loans"];
+  D5 [label="D5  Fines"];
+  D6 [label="D6  Reservations"];
+  D7 [label="D7  Notifications"];
+
+  M -> P1 [label="registration / login details"];
+  P1 -> M [label="login result"];
+  P1 -> D3 [label="new member record"];
+  D3 -> P1 [label="credentials"];
+  L -> P1 [label="login details"];
+
+  M -> P2 [label="search criteria"];
+  P2 -> M [label="book details +\navailability"];
+  D1 -> P2 [label="book data"];
+  D2 -> P2 [label="copy status"];
+
+  M -> P3 [label="borrow request"];
+  P3 -> M [label="request status"];
+  D3 -> P3 [label="eligibility\n(fines, loans)"];
+  P3 -> L [label="pending requests"];
+  L -> P3 [label="confirm / reject"];
+  P3 -> P4 [label="approved request"];
+
+  P4 -> D4 [label="loan record"];
+  D4 -> P4 [label="loan, due date"];
+  P4 -> D2 [label="copy: On Loan /\nAvailable"];
+  M -> P4 [label="return initiation"];
+  L -> P4 [label="return confirmation"];
+  P4 -> P5 [label="returned loan"];
+  P4 -> P6 [label="copy returned"];
+
+  D4 -> P5 [label="loans, due dates"];
+  P5 -> D5 [label="fine record"];
+  P5 -> D7 [label="overdue /\ndue-date notice"];
+  P5 -> L [label="overdue report"];
+  D5 -> P5 [label="fine history"];
+
+  M -> P6 [label="reservation request"];
+  P6 -> M [label="queue position"];
+  P6 -> D6 [label="queue entry"];
+  D6 -> P6 [label="waiting queue"];
+  P6 -> D7 [label="availability notice"];
+  D7 -> M [label="notifications"];
+  L -> P6 [label="view queue"];
+
+  L -> P7 [label="book / copy changes"];
+  P7 -> D1 [label="catalog updates"];
+  P7 -> D2 [label="copy updates"];
+
+  L -> P8 [label="member actions\n(view, suspend)"];
+  P8 -> D3 [label="account status"];
+  D5 -> P8 [label="unpaid fines"];
+  P8 -> L [label="member list"];
+}
