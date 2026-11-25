@@ -794,3 +794,14 @@ body { -webkit-tap-highlight-color: transparent; }
 .auth-divider::before, .auth-divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 .auth-switch { margin: 18px 0 0; text-align: center; font-size: .95rem; }
 [hidden] { display: none !important; }
+
+/* Soft green page background with a slow, subtle drift (not white) */
+body { background-color: #d9e6dd; position: relative; }
+body::before { content: ""; position: fixed; inset: -20%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(40% 35% at 20% 25%, rgba(185, 136, 47, .20), transparent 70%),
+    radial-gradient(45% 40% at 80% 20%, rgba(47, 111, 119, .20), transparent 70%),
+    radial-gradient(50% 45% at 55% 85%, rgba(46, 125, 79, .18), transparent 70%);
+  animation: bg-drift 28s ease-in-out infinite alternate; }
+@keyframes bg-drift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(3%, 3%, 0) scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
