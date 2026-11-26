@@ -29,7 +29,7 @@ The diagrams, the 19 functional requirements and the front end were cross-checke
 Nine pages, static HTML/CSS/JS with mock data (no backend required, per the project brief). Demo actions that change state (borrow requests, reservations, loan confirmations, returns, fines and fine payments, catalog edits, suspension, login) persist in the browser via localStorage. The business logic is in `docs/js/logic.js` and has automated tests (below):
 
 - **Home** - overview, live stats, feature map to the requirements
-- **Book Catalog** - search by title/author/category with live availability (FR-03, FR-04)
+- **Book Catalog** - search by title/author/category/ISBN with live availability (FR-03, FR-04)
 - **Book Details** - copies and their status, borrow request and reservation actions that are stored (FR-05, FR-09)
 - **Member Dashboard** - current loans, due-date reminders, overdue notices, fines, reservations (FR-06, FR-10, FR-11)
 - **Borrowing History** - every loan with return dates and late fines (FR-07)

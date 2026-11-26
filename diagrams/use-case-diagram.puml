@@ -15,7 +15,7 @@ rectangle "Library Management System" {
     usecase "UC2 Log in / Log out\n(FR-02)" as UC2
   }
   package "Browse and Borrow" {
-    usecase "UC3 Search books\n(FR-03)" as UC3
+    usecase "UC3 Search books\n(title, author, category, ISBN) (FR-03)" as UC3
     usecase "UC4 View book details\nand availability (FR-04)" as UC4
     usecase "UC5 Submit borrow request\n(FR-05)" as UC5
     usecase "UC6 View current loans\n(FR-06)" as UC6
@@ -28,7 +28,7 @@ rectangle "Library Management System" {
   }
   package "Library Administration" {
     usecase "UC12 Manage catalog\n(FR-12)" as UC12
-    usecase "UC13 Manage book copies\n(FR-13)" as UC13
+    usecase "UC13 Manage book copies\n(add, remove, status) (FR-13)" as UC13
     usecase "UC14 Confirm borrow request\nand issue loan (FR-14)" as UC14
     usecase "UC15 Process return\n(FR-15)" as UC15
     usecase "UC16 Calculate overdue fine\n(FR-16)" as UC16

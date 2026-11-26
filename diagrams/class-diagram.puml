@@ -33,6 +33,7 @@ class Book {
   - publicationYear : int
   --
   + addCopy(copy : BookCopy)
+  + removeCopy(copy : BookCopy)
   + getAvailableCopies() : int
   + updateDetails()
 }
@@ -78,6 +79,7 @@ class Librarian {
   + updateBook(book : Book)                  <<FR-12>>
   + removeBook(bookId : int)                 <<FR-12>>
   + manageCopy(copy : BookCopy, s : CopyStatus) <<FR-13>>
+  + setCopyCount(book : Book, total : int)   <<FR-13>>
   + confirmBorrowRequest(loan : Loan)        <<FR-14>>
   + processReturn(loan : Loan)               <<FR-15>>
   + identifyOverdueLoans() : List            <<FR-16>>

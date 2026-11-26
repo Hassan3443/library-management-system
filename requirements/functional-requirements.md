@@ -13,7 +13,7 @@ their availability before requesting to borrow them.
 | --- | --- | --- | --- |
 | FR-01 | Member | The system shall allow a visitor to register as a library member with name, email and password. | Person 1 |
 | FR-02 | Member | The system shall allow a member or librarian to log in with email and password (checked against the stored accounts, a wrong password is rejected) and to log out. | Person 1 |
-| FR-03 | Member | The system shall allow a member to search for books by title, author or category. | Person 2 |
+| FR-03 | Member | The system shall allow a member to search for books by title, author, category or ISBN. | Person 2 |
 | FR-04 | Member | The system shall display book details (title, author, category, ISBN, publication year) together with real-time availability of its copies. | Person 2 |
 | FR-05 | Member | The system shall allow a member to submit a borrow request for an available book. | Person 3 |
 | FR-06 | Member | The system shall show the member their current loans with borrowing date and due date for each loan. | Person 4 |
@@ -23,7 +23,7 @@ their availability before requesting to borrow them.
 | FR-10 | Member | The system shall display the member's outstanding fines with the amount and the loan that caused each fine, and shall allow a librarian to record the payment of a fine. | Person 4 |
 | FR-11 | Member | The system shall notify a member when a loan is approaching its due date or becomes overdue. | Person 6 |
 | FR-12 | Librarian | The system shall allow a librarian to add, update and remove books from the catalog. | Person 7 |
-| FR-13 | Librarian | The system shall allow a librarian to manage individual book copies and their status (available, on loan, reserved, under maintenance). | Person 7 |
+| FR-13 | Librarian | The system shall allow a librarian to manage individual book copies (add or remove available copies) and their status (available, on loan, reserved, under maintenance). | Person 7 |
 | FR-14 | Librarian | The system shall allow a librarian to review and confirm borrow requests, recording the borrowing date and due date. | Person 3 |
 | FR-15 | Librarian | The system shall allow a librarian to process returned books and update copy availability accordingly. | Person 5 |
 | FR-16 | Librarian | The system shall automatically identify overdue loans and calculate the fine for each based on the number of overdue days. | Person 5 |
