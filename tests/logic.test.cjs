@@ -284,6 +284,15 @@ test("members page: action buttons sit in three fixed equal slots (layout never 
   assert(/table-layout: fixed/.test(css));
 });
 
+test("front end has 7 pages: members live in the librarian dashboard, login is a modal", () => {
+  const pages = fs.readdirSync(path.join(__dirname, "../docs")).filter(f => f.endsWith(".html")).sort();
+  assert.deepStrictEqual(pages, ["book.html", "catalog.html", "history.html", "index.html", "librarian.html", "member.html", "return.html"]);
+  const lib = fs.readFileSync(path.join(__dirname, "../docs/librarian.html"), "utf8");
+  assert(lib.includes('id="members-section"') && lib.includes("renderMembersPage()"));
+  const app = fs.readFileSync(path.join(__dirname, "../docs/js/app.js"), "utf8");
+  assert(app.includes('id="auth-modal"') && !/login\.html|members\.html/.test(app));
+});
+
 let failed = 0;
 for (const [name, fn] of tests) {
   try { fn(); console.log("ok   " + name); } catch (e) { failed++; console.log("FAIL " + name + "\n     " + e.message); }

@@ -228,3 +228,22 @@ footer.site-footer::before { background: #fff; }
   table:has(#members) th:nth-child(6) { width: 330px; }
   #members td:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
 }
+
+/* ---------- Login / register modal ---------- */
+#auth-modal { border: 1px solid rgba(255, 255, 255, .45); border-radius: 22px; padding: 26px 24px 22px; width: min(420px, calc(100vw - 28px));
+  color: #fff; background: linear-gradient(160deg, rgba(120, 30, 70, .82), rgba(150, 50, 60, .8));
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  box-shadow: 0 24px 70px rgba(30, 5, 25, .55), inset 0 1px 0 rgba(255, 255, 255, .35); max-height: calc(100vh - 28px); overflow: auto; }
+#auth-modal::backdrop { background: rgba(30, 6, 22, .55); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+#auth-modal .card { background: none; border: 0; box-shadow: none; padding: 0; -webkit-backdrop-filter: none; backdrop-filter: none; }
+#auth-modal .card::before, #auth-modal .card::after { display: none; }
+#auth-modal .auth-title { margin: 0 0 16px; font-size: 1.5rem; color: #fff; }
+#auth-modal label { color: rgba(255, 255, 255, .9); }
+#auth-modal .auth-switch, #auth-modal .auth-divider { color: rgba(255, 255, 255, .8); }
+#auth-modal .auth-switch a { color: #fff; font-weight: 700; text-decoration: underline; }
+.auth-close { z-index: 3; position: absolute; top: 10px; right: 12px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .4);
+  background: rgba(255, 255, 255, .12); color: #fff; font-size: 22px; line-height: 1; cursor: pointer; }
+.auth-close:hover { background: rgba(255, 255, 255, .25); }
+#auth-modal { position: fixed; inset: 0; margin: auto; height: fit-content; }
+#auth-modal .auth-title::before { display: none; }
+#members-section { scroll-margin-top: 90px; }

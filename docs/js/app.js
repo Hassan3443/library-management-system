@@ -189,7 +189,7 @@ function renderBookDetails() {
         <button class="btn" id="borrow" ${nAvail && elig.ok && !holds && !requested ? "" : "disabled"}>Request to borrow</button>
         <button class="btn secondary" id="reserve" ${canReserve ? "" : "disabled"}>Reserve this book</button>
       </div>
-      ${canAct ? "" : `<p class="book-meta">${role === "guest" ? 'Log in as a member to borrow or reserve this book. <a href="login.html">Log in</a>' : "Librarians manage copies and requests from the Librarian Dashboard."}</p>`}
+      ${canAct ? "" : `<p class="book-meta">${role === "guest" ? 'Log in as a member to borrow or reserve this book. <a href="#login">Log in</a>' : "Librarians manage copies and requests from the Librarian Dashboard."}</p>`}
       <div id="action-result" style="margin-top:14px"></div>
     </div>
     <h2>Copies</h2>
@@ -617,13 +617,72 @@ function renderMembersPage() {
 /* ---------- Login / Register ---------- */
 const HOME_BY_ROLE = { member: "member.html", librarian: "librarian.html" };
 function renderLoginPage() {
+  /* Login and register live in a modal on every page (no separate page). */
+  const MODAL_HTML = `<dialog id="auth-modal" aria-label="Log in or register">
+  <button type="button" class="auth-close" id="auth-close" aria-label="Close">&times;</button>
+<div class="card" id="login-card">
+        <h2 class="auth-title">Log in</h2>
+        <form id="login-form">
+          <label for="lemail">Email</label>
+          <input type="email" id="lemail" required placeholder="you@example.com" style="margin-bottom:12px">
+          <label for="lpass">Password</label>
+          <input type="password" id="lpass" required placeholder="Password" style="margin-bottom:16px">
+          <button class="btn" type="submit" style="width:100%">Log in</button>
+        </form>
+        <div id="login-msg" style="margin-top:12px"></div>
+        <div class="auth-divider"><span>or</span></div>
+        <button type="button" class="btn secondary google-btn" id="google-btn">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.1 5.5c4.3-4 6.8-9.9 6.8-16.9z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.1-5.5c-2 1.4-4.5 2.2-8.8 2.2-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+          Sign in with Google
+        </button>
+        <p class="auth-switch">Don't have an account? <a href="#register" id="show-register">Register</a></p>
+      </div>
+      <div class="card" id="register-card" hidden>
+        <h2 class="auth-title">Create your account</h2>
+        <form id="register-form">
+          <label for="rname">Full name</label>
+          <input type="text" id="rname" required placeholder="Your name" style="margin-bottom:12px">
+          <label for="remail">Email</label>
+          <input type="email" id="remail" required placeholder="you@example.com" style="margin-bottom:12px">
+          <label for="rpass">Password</label>
+          <input type="password" id="rpass" required placeholder="Choose a password" style="margin-bottom:16px">
+          <button class="btn" type="submit" style="width:100%">Create account</button>
+        </form>
+        <div id="register-msg" style="margin-top:12px"></div>
+        <div class="auth-divider"><span>or</span></div>
+        <button type="button" class="btn secondary google-btn" id="google-btn-reg">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.1 5.5c4.3-4 6.8-9.9 6.8-16.9z"/><path fill="#FBBC05" d="M10.5 28.7c-.5-1.4-.8-2.9-.8-4.7s.3-3.3.8-4.7l-7.9-6.1C.9 16.4 0 20.1 0 24s.9 7.6 2.6 10.8l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.1-5.5c-2 1.4-4.5 2.2-8.8 2.2-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z"/></svg>
+          Sign up with Google
+        </button>
+        <p class="auth-switch">Already have an account? <a href="#login" id="show-login">Log in</a></p>
+      </div>
+</dialog>`;
+  document.body.insertAdjacentHTML("beforeend", MODAL_HTML);
+  const modal = document.getElementById("auth-modal");
   const showCard = which => {
     document.getElementById("login-card").hidden = which !== "login";
     document.getElementById("register-card").hidden = which !== "register";
-    document.title = which === "register" ? "City Library - Register" : "City Library - Login";
   };
-  const fromHash = () => showCard(location.hash === "#register" ? "register" : "login");
+  const openAuth = which => {
+    showCard(which);
+    if (!modal.open) modal.showModal();
+    const f = document.getElementById(which === "register" ? "rname" : "lemail");
+    if (f) f.focus();
+  };
+  const closeAuth = () => {
+    if (modal.open) modal.close();
+    if (/^#(login|register)$/.test(location.hash)) history.replaceState(null, "", location.pathname + location.search);
+  };
+  const fromHash = () => { if (/^#(login|register)$/.test(location.hash)) openAuth(location.hash.slice(1)); };
   window.addEventListener("hashchange", fromHash);
+  document.getElementById("auth-close").addEventListener("click", closeAuth);
+  modal.addEventListener("click", e => { if (e.target === modal) closeAuth(); });
+  modal.addEventListener("cancel", e => { e.preventDefault(); closeAuth(); });
+  document.addEventListener("click", e => {
+    const a = e.target.closest && e.target.closest('a[href="#login"], a[href="#register"]');
+    if (!a) return;
+    e.preventDefault(); history.replaceState(null, "", a.getAttribute("href")); openAuth(a.getAttribute("href").slice(1));
+  });
   fromHash();
   document.getElementById("google-btn").addEventListener("click", () => {
     document.getElementById("login-msg").innerHTML = `<div class="notice">Google sign-in is not available yet.</div>`;
@@ -779,19 +838,19 @@ addEventListener('keydown', function (e) {
 /* ---------- Role-based navigation, page guard and logout ---------- */
 (function () {
   const NAV = {
-    guest: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["login.html", "Login"]],
+    guest: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["#login", "Login"]],
     member: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["member.html", "My Dashboard"],
              ["history.html", "Borrowing History"], ["return.html", "Return Book"]],
     librarian: [["index.html", "Home"], ["catalog.html", "Book Catalog"], ["librarian.html", "Librarian Dashboard"],
-                ["members.html", "Members"], ["return.html", "Process Returns"]]
+                ["return.html", "Process Returns"]]
   };
   const role = currentRole();
   const page = location.pathname.split("/").pop() || "index.html";
   const ALLOWED = { "member.html": ["member"], "history.html": ["member"],
-                    "librarian.html": ["librarian"], "members.html": ["librarian"], "return.html": ["member", "librarian"] };
+                    "librarian.html": ["librarian"], "return.html": ["member", "librarian"] };
   if (ALLOWED[page] && !ALLOWED[page].includes(role)) {
     document.documentElement.style.display = "none";
-    window.location.replace(role === "guest" ? "login.html" : HOME_BY_ROLE[role]);
+    window.location.replace(role === "guest" ? "index.html#login" : HOME_BY_ROLE[role]);
     return;
   }
   const dl = document.getElementById("dash-link");
@@ -802,15 +861,18 @@ addEventListener('keydown', function (e) {
     `<a href="${href}"${href === page ? ' class="active" aria-current="page"' : ""}>${label}</a>`).join("");
   if (STATE.user) {
     const btn = document.createElement("a");
-    btn.href = "login.html";
+    btn.href = "index.html";
     btn.id = "logout-btn";
     btn.textContent = "Logout (" + STATE.user.name + ", " + role + ")";
     btn.addEventListener("click", e => {
       e.preventDefault();
       STATE.user = null;
       saveState();
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     });
     nav.appendChild(btn);
   }
 })();
+
+/* Login / register modal is available on every page. */
+renderLoginPage();

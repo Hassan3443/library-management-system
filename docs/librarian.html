@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=19">
-  <link rel="stylesheet" href="css/glass.css?v=5">
+  <link rel="stylesheet" href="css/glass.css?v=9">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -25,13 +25,13 @@
         <a href="history.html">Borrowing History</a>
         <a href="return.html">Return Book</a>
         <a href="librarian.html" class="active" aria-current="page">Librarian Dashboard</a>
-        <a href="login.html">Login</a>
+        <a href="#login">Login</a>
       </nav>
     </div>
   </header>
   <main id="main">
     <h1>Librarian Dashboard</h1>
-    <p class="subtitle">Requests, loans, fines and catalog. <a href="members.html">Members</a>.</p>
+    <p class="subtitle">Requests, loans, fines and catalog. <a href="#members-section">Members</a>.</p>
     <div id="notice"></div>
     <section class="grid cols-4" id="stats"></section>
 
@@ -87,12 +87,28 @@
         <tbody id="reservations"></tbody>
       </table>
     </div>
+    <h2 id="members-section">Members</h2>
+    <p class="book-meta">Suspend, reactivate, promote or remove members.</p>
+    <div id="members-msg"></div>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th>Member</th><th>Email</th><th>Active loans</th><th>Unpaid fines</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="members"></tbody>
+      </table>
+    </div>
+    <h2>Librarians</h2>
+    <div class="card" style="padding:0; overflow:auto">
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+        <tbody id="staff"></tbody>
+      </table>
+    </div>
   </main>
   <footer class="site-footer">City Library</footer>
   <script src="js/data.js?v=20"></script>
   <script src="js/logic.js?v=22"></script>
   <script src="js/accounts.js?v=20"></script>
-  <script src="js/app.js?v=25"></script>
-  <script>renderLibrarianDashboard();</script>
+  <script src="js/app.js?v=26"></script>
+  <script>renderLibrarianDashboard(); renderMembersPage();</script>
 </body>
 </html>

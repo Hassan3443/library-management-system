@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=19">
-  <link rel="stylesheet" href="css/glass.css?v=5">
+  <link rel="stylesheet" href="css/glass.css?v=9">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -25,7 +25,7 @@
         <a href="history.html">Borrowing History</a>
         <a href="return.html">Return Book</a>
         <a href="librarian.html">Librarian Dashboard</a>
-        <a href="login.html">Login</a>
+        <a href="#login">Login</a>
       </nav>
     </div>
   </header>
@@ -34,7 +34,7 @@
       <h1>Welcome to City Library</h1>
       <p>Search, borrow, return and reserve books.</p>
       <a class="btn" href="catalog.html">Browse the catalog</a>
-      <a class="btn secondary" id="dash-link" href="login.html">Log in</a>
+      <a class="btn secondary" id="dash-link" href="#login">Log in</a>
     </section>
 
     <section class="grid cols-4" id="stats"></section>
@@ -76,7 +76,7 @@
   <script src="js/data.js?v=20"></script>
   <script src="js/logic.js?v=22"></script>
   <script src="js/accounts.js?v=20"></script>
-  <script src="js/app.js?v=25"></script>
+  <script src="js/app.js?v=26"></script>
   <script>
     const activeLoans = LOANS.filter(l => !l.returnDate).length;
     const overdue = LOANS.filter(l => !l.returnDate && overdueDays(l) > 0).length;
