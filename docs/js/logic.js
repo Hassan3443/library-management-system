@@ -43,14 +43,14 @@
     const o = opts || {};
     const reasons = [];
     const m = memberOf(db, memberId);
-    if (!m) return { ok: false, reasons: ["the member account does not exist"] };
-    if (m.suspended) reasons.push("the member account is suspended");
-    if (db.FINES.some(f => f.memberId === memberId && !f.paid)) reasons.push("there is an unpaid fine on the member account");
+    if (!m) return { ok: false, reasons: ["member not found"] };
+    if (m.suspended) reasons.push("account suspended");
+    if (db.FINES.some(f => f.memberId === memberId && !f.paid)) reasons.push("unpaid fine");
     if (!o.skipLoanLimit) {
       const active = openLoans(db, memberId).length;
       const pending = o.countPending === false ? 0 : pendingOf(db, memberId).length;
       if (active + pending >= MAX_LOANS) {
-        reasons.push(`the member already has ${active} active loan(s) and ${pending} pending request(s) (limit ${MAX_LOANS})`);
+        reasons.push(`${active} active loan(s) and ${pending} pending (limit ${MAX_LOANS})`);
       }
     }
     return { ok: reasons.length === 0, reasons: reasons };
@@ -132,7 +132,7 @@
     const book = bookOf(db, req.bookId);
     if (!book) return fail("The requested book no longer exists. Reject the request.");
     const e = eligibility(db, req.memberId, { countPending: false });
-    if (!e.ok) return fail("Cannot confirm: " + e.reasons.join("; ") + ". Reject the request or resolve this first.");
+    if (!e.ok) return fail("Cannot confirm: " + e.reasons.join("; ") + ". Reject it or resolve this first.");
     const copy = availableCopies(book)[0];
     if (!copy) return fail("Cannot confirm: no copy of this book is available.");
     copy.status = "on-loan";

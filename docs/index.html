@@ -32,8 +32,7 @@
   <main id="main">
     <section class="hero">
       <h1>Welcome to City Library</h1>
-      <p>Search the catalog, check availability, borrow and return books, reserve titles that are
-         on loan, and keep track of your due dates and fines, all in one place.</p>
+      <p>Search, borrow, return and reserve books.</p>
       <a class="btn" href="catalog.html">Browse the catalog</a>
       <a class="btn secondary" id="dash-link" href="login.html">Log in</a>
     </section>
@@ -45,8 +44,8 @@
       <li class="feat-row">
         <div class="feat-meta"><span class="feat-role">Everyone</span></div>
         <div class="feat-body">
-          <h3>Find any book as you type</h3>
-          <p>Find books by title, author or category, and see the live availability of every copy before you make a request.</p>
+          <h3>Find books fast</h3>
+          <p>Search by title, author or category. See live availability.</p>
         </div>
         <div class="feat-aside" aria-hidden="true"><span>Search title or author</span><kbd>/</kbd></div>
       </li>
@@ -54,44 +53,30 @@
         <div class="feat-meta"><span class="feat-role">Members</span></div>
         <div class="feat-body">
           <h3>Borrow and return</h3>
-          <p>Submit borrow requests, follow their approval, and return books when you are done. Loans run for 14 days.</p>
+          <p>14-day loans, 5 EGP per overdue day.</p>
         </div>
       </li>
       <li class="feat-row">
         <div class="feat-meta"><span class="feat-role">Members</span></div>
         <div class="feat-body">
-          <h3>Stay on top of due dates</h3>
-          <p>Your dashboard shows current loans, due dates, overdue notices and any fines, at 5 EGP per overdue day.</p>
-        </div>
-      </li>
-      <li class="feat-row">
-        <div class="feat-meta"><span class="feat-role">Members</span></div>
-        <div class="feat-body">
-          <h3>Reserve popular books</h3>
-          <p>If every copy is on loan, join the reservation queue and get notified when a copy comes back.</p>
-        </div>
-      </li>
-      <li class="feat-row">
-        <div class="feat-meta"><span class="feat-role">Members</span></div>
-        <div class="feat-body">
-          <h3>Track your history</h3>
-          <p>Your full borrowing history stays available, including return dates and fines from late returns.</p>
+          <h3>Reserve and track</h3>
+          <p>Queue for books on loan. Full history.</p>
         </div>
       </li>
       <li class="feat-row">
         <div class="feat-meta"><span class="feat-role">Librarians</span></div>
         <div class="feat-body">
-          <h3>Run the library from one dashboard</h3>
-          <p>Librarians manage the catalog, copies, borrow requests, returns, overdue fines, members and reservation queues.</p>
+          <h3>One dashboard</h3>
+          <p>Catalog, requests, returns, fines and members.</p>
         </div>
       </li>
     </ol>
   </main>
   <footer class="site-footer">City Library</footer>
   <script src="js/data.js?v=20"></script>
-  <script src="js/logic.js?v=20"></script>
+  <script src="js/logic.js?v=21"></script>
   <script src="js/accounts.js?v=20"></script>
-  <script src="js/app.js?v=20"></script>
+  <script src="js/app.js?v=21"></script>
   <script>
     const activeLoans = LOANS.filter(l => !l.returnDate).length;
     const overdue = LOANS.filter(l => !l.returnDate && overdueDays(l) > 0).length;

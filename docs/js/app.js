@@ -205,7 +205,7 @@ function renderBookDetails() {
   `;
   if (canAct && !elig.ok) {
     document.getElementById("action-result").innerHTML =
-      `<div class="notice">Borrowing is blocked for this member: ${elig.reasons.join("; ")}.
+      `<div class="notice">Borrowing blocked: ${elig.reasons.join("; ")}.
        Resolve this on the <a href="member.html">member dashboard</a> first.</div>`;
   }
   const show = (res, okText) => {
@@ -216,7 +216,7 @@ function renderBookDetails() {
   document.getElementById("borrow").addEventListener("click", () => {
     if (!me) return;
     show(LMS.requestBorrow(DB, me.id, b.id), () =>
-      "Borrow request sent. A librarian will review and confirm it; the due date is set at confirmation.");
+      "Borrow request sent. Awaiting librarian confirmation.");
   });
   document.getElementById("reserve").addEventListener("click", () => {
     if (!me) return;
@@ -237,11 +237,11 @@ function renderMemberDashboard() {
   mine.forEach(l => {
     const b = bookSafe(l.bookId);
     const days = daysBetween(TODAY, l.dueDate);
-    if (overdueDays(l) > 0) notices.push(`<div class="notice">Overdue: "${esc(b.title)}" was due on ${l.dueDate}. Please return it; fines accrue at ${FINE_PER_DAY} EGP/day.</div>`);
-    else if (days <= 3) notices.push(`<div class="notice ok">Reminder: "${esc(b.title)}" is due in ${days} day(s), on ${l.dueDate}.</div>`);
+    if (overdueDays(l) > 0) notices.push(`<div class="notice">Overdue: "${esc(b.title)}", due ${l.dueDate}. Fine ${FINE_PER_DAY} EGP/day.</div>`);
+    else if (days <= 3) notices.push(`<div class="notice ok">Due in ${days} day(s): "${esc(b.title)}", ${l.dueDate}.</div>`);
   });
   const elig = memberEligibility();
-  if (!elig.ok) notices.unshift(`<div class="notice">Borrowing is currently blocked for this account: ${elig.reasons.join("; ")}.</div>`);
+  if (!elig.ok) notices.unshift(`<div class="notice">Borrowing blocked: ${elig.reasons.join("; ")}.</div>`);
   document.getElementById("notices").innerHTML = notices.join("");
 
   document.getElementById("loans").innerHTML = mine.map(l => {
@@ -606,7 +606,7 @@ function renderLoginPage() {
   window.addEventListener("hashchange", fromHash);
   fromHash();
   document.getElementById("google-btn").addEventListener("click", () => {
-    document.getElementById("login-msg").innerHTML = `<div class="notice">Google sign-in is not available yet. Please use your email and password.</div>`;
+    document.getElementById("login-msg").innerHTML = `<div class="notice">Google sign-in is not available yet.</div>`;
   });
   const acc0 = currentAccount();
   if (acc0) {
@@ -615,7 +615,7 @@ function renderLoginPage() {
       `<div class="notice ok">Already logged in as ${esc(acc0.name)} (${r}). Go to your <a href="${HOME_BY_ROLE[r]}">${r} dashboard</a>.</div>`;
   }
   document.getElementById("google-btn-reg").addEventListener("click", () => {
-    document.getElementById("register-msg").innerHTML = `<div class="notice">Google sign-up is not available yet. Please register with your email and password.</div>`;
+    document.getElementById("register-msg").innerHTML = `<div class="notice">Google sign-up is not available yet.</div>`;
   });
   document.getElementById("login-form").addEventListener("submit", e => {
     e.preventDefault();
@@ -636,7 +636,7 @@ function renderLoginPage() {
     const email = document.getElementById("remail").value.trim().toLowerCase();
     const pass = document.getElementById("rpass").value;
     const msg = document.getElementById("register-msg");
-    if (!name) { msg.innerHTML = `<div class="notice">Please enter your full name.</div>`; return; }
+    if (!name) { msg.innerHTML = `<div class="notice">Enter your full name.</div>`; return; }
     if (pass.length < 6) { msg.innerHTML = `<div class="notice">Password must be at least 6 characters.</div>`; return; }
     if (allAccounts().some(a => a.email.toLowerCase() === email)) { msg.innerHTML = `<div class="notice">An account with this email already exists.</div>`; return; }
     const id = Math.max(199, ...STATE.removedMembers, ...MEMBERS.map(m => m.id)) + 1;
