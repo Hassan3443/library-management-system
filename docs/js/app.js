@@ -239,7 +239,7 @@ function renderMemberDashboard() {
     const b = bookSafe(l.bookId);
     const days = daysBetween(TODAY, l.dueDate);
     if (overdueDays(l) > 0) notices.push(`<div class="notice">Overdue: "${esc(b.title)}", due ${l.dueDate}. Fine ${FINE_PER_DAY} EGP/day.</div>`);
-    else if (days <= 3) notices.push(`<div class="notice ok">Due in ${days} day(s): "${esc(b.title)}", ${l.dueDate}.</div>`);
+    else if (days >= 0 && days <= 3) notices.push(`<div class="notice ok">${days === 0 ? "Due today" : "Due in " + days + " day(s)"}: "${esc(b.title)}", ${l.dueDate}.</div>`);
   });
   const elig = memberEligibility();
   if (!elig.ok) notices.unshift(`<div class="notice">Borrowing blocked: ${elig.reasons.join("; ")}.</div>`);
@@ -250,7 +250,7 @@ function renderMemberDashboard() {
     const days = daysBetween(TODAY, l.dueDate);
     const due = overdueDays(l) > 0
       ? `<span class="badge danger">${Math.abs(days)} day(s) late</span>`
-      : `<span class="badge info">${days} day(s) left</span>`;
+      : `<span class="badge info">${days === 0 ? "due today" : days + " day(s) left"}</span>`;
     return `<tr><td><div class="book-title">${esc(b.title)}</div><div class="book-meta">${esc(b.author)}</div></td>
       <td>${esc(l.copyId)}</td><td>${l.borrowDate}</td><td>${l.dueDate}</td><td>${due}</td>
       <td><a class="btn small secondary" href="return.html?loanId=${l.id}">Return</a></td></tr>`;
@@ -279,7 +279,7 @@ function renderMemberDashboard() {
 /* ---------- Borrowing History ---------- */
 function renderHistory() {
   const me = currentMember();
-  document.getElementById("history").innerHTML = LOANS.filter(l => me && l.memberId === me.id).slice().reverse().map(l => {
+  document.getElementById("history").innerHTML = LOANS.filter(l => me && l.memberId === me.id).slice().sort((a, b) => b.borrowDate.localeCompare(a.borrowDate) || b.id - a.id).map(l => {
     const b = bookSafe(l.bookId);
     const fine = l.returnDate ? loanFine(l) : 0;
     return `<tr><td>#${l.id}</td>
@@ -597,9 +597,18 @@ function renderMembersPage() {
     }
     if (s) {
       const m = MEMBERS.find(x => x.id === Number(s.dataset.suspend));
+      if (!m.suspended && STATE.promoted[m.id]) {
+        document.getElementById("members-msg").innerHTML = `<div class="notice">${esc(m.name)} is a librarian. Remove the librarian role before suspending.</div>`;
+        return;
+      }
       m.suspended = !m.suspended;
       STATE.suspended[m.id] = m.suspended;
     } else if (p) {
+      const pm = MEMBERS.find(x => x.id === Number(p.dataset.promote));
+      if (pm && pm.suspended) {
+        document.getElementById("members-msg").innerHTML = `<div class="notice">${esc(pm.name)} is suspended. Reactivate the account before promoting.</div>`;
+        return;
+      }
       STATE.promoted[Number(p.dataset.promote)] = true;
     } else if (d) {
       const own = currentAccount();
