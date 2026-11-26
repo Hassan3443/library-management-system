@@ -1,17 +1,16 @@
 @startuml
 !include _style.iuml
-title Library Management System: Borrow Request Sequence Diagram (FR-05, FR-14)
+title Library Management System: Borrow Request Sequence Diagram (FR-04, FR-05, FR-14)
 skinparam sequenceMessageAlign center
 autonumber "<b>00"
 
-actor "Member" as M
-participant ":Member" as MO
+actor "Library Member" as M
+participant "m : Member" as MO
 participant ":Book" as B
 participant ":BookCopy" as C
 participant ":Loan" as L
-participant ":Fine" as F
-participant ":Librarian" as LO
-actor "Librarian" as LB
+participant "l : Librarian" as LO
+actor "Librarian (person)" as LB
 
 M -> MO : viewBookDetails(book)  (FR-04)
 activate MO
@@ -24,43 +23,42 @@ deactivate MO
 
 M -> MO : requestBorrow(book)  (FR-05)
 activate MO
-MO -> MO : check account active
-MO -> F : unpaid fines for member?
-F --> MO : none / unpaid
-MO -> MO : count active loans (limit 3)
-MO -> C : find an AVAILABLE copy
-C --> MO : copy / none
+MO -> MO : hasUnpaidFines()
+MO -> MO : countActiveLoans() + pending requests (limit 3)
+MO -> B : findAvailableCopy()
+B --> MO : copy / none
 alt member eligible and copy available
-  MO -> L ** : <<create>> Loan(member, copy)
+  MO -> L ** : <<create>> new Loan(member, book)
   activate L
   L -> L : status = PENDING
   L --> MO : loan (PENDING)
   deactivate L
   MO ->> LO : new pending request
   MO --> M : request submitted
-  deactivate MO
-else not eligible (inactive account, unpaid fine, 3 active loans) or no copy available
+else not eligible (suspended, unpaid fine, limit 3 reached) or no copy available
   MO --> M : request rejected with reason
-  deactivate MO
 end
+deactivate MO
 
 ... Later: Librarian reviews pending request ...
 
 LB -> LO : confirmBorrowRequest(loan)  (FR-14)
 activate LO
-alt approved
-  LO -> L : borrowDate = today, dueDate = +14 days
+LO -> LO : re-check member and copy
+alt approved and re-check passed
+  LO -> L : approve(dueDate = today + 14 days)
   activate L
-  LO -> L : status = ACTIVE
+  L --> LO : status ACTIVE
   deactivate L
   LO -> C : markOnLoan()
   activate C
   C --> LO : status = ON_LOAN
   deactivate C
   LO ->> M : loan confirmed with due date
-else rejected
-  LO -> L : status = REJECTED
+else rejected or re-check failed
+  LO -> L : reject(reason)  (rejectBorrowRequest)
   activate L
+  L --> LO : status REJECTED
   deactivate L
   LO ->> M : request rejected with reason
 end

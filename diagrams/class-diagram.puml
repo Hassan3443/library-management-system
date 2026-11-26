@@ -4,6 +4,10 @@ title Library Management System: Class Diagram
 hide empty members
 skinparam linetype ortho
 
+enum Role <<enumeration>> {
+  MEMBER
+  LIBRARIAN
+}
 enum CopyStatus <<enumeration>> {
   AVAILABLE
   ON_LOAN
@@ -14,7 +18,6 @@ enum LoanStatus <<enumeration>> {
   PENDING
   ACTIVE
   RETURNED
-  OVERDUE
   REJECTED
 }
 enum ReservationStatus <<enumeration>> {
@@ -35,6 +38,7 @@ class Book {
   + addCopy(copy : BookCopy)
   + removeCopy(copy : BookCopy)
   + getAvailableCopies() : int
+  + findAvailableCopy() : BookCopy
   + updateDetails()
 }
 class BookCopy {
@@ -51,7 +55,8 @@ abstract class User {
   # userId : int
   # name : String
   # email : String
-  # passwordHash : String
+  # password : String
+  # role : Role
   --
   + login(email : String, password : String) : boolean  <<FR-02>>
   + logout()                <<FR-02>>
@@ -60,7 +65,7 @@ class Member {
   - joinDate : Date
   - isActive : boolean
   --
-  + register(name : String, email : String, password : String)  <<FR-01>>
+  + {static} register(name : String, email : String, password : String)  <<FR-01>>
   + searchBooks(criteria : String) : List  <<FR-03>>
   + viewBookDetails(book : Book) : Book  <<FR-04>>
   + requestBorrow(book : Book) : Loan        <<FR-05>>
@@ -71,9 +76,10 @@ class Member {
   + cancelReservation(r : Reservation)       <<FR-09>>
   + viewFines() : List                       <<FR-10>>
   + receiveNotification() : Notification     <<FR-11>>
+  + hasUnpaidFines() : boolean
+  + countActiveLoans() : int
 }
 class Librarian {
-  - employeeNo : int
   --
   + addBook(book : Book)                     <<FR-12>>
   + updateBook(book : Book)                  <<FR-12>>
@@ -81,6 +87,7 @@ class Librarian {
   + manageCopy(copy : BookCopy, s : CopyStatus) <<FR-13>>
   + setCopyCount(book : Book, total : int)   <<FR-13>>
   + confirmBorrowRequest(loan : Loan)        <<FR-14>>
+  + rejectBorrowRequest(loan : Loan, reason : String)  <<FR-14>>
   + processReturn(loan : Loan)               <<FR-15>>
   + identifyOverdueLoans() : List            <<FR-16>>
   + calculateFine(loan : Loan) : Fine        <<FR-16>>
@@ -107,17 +114,19 @@ class Loan {
   - returnDate : Date
   - status : LoanStatus
   --
+  + approve(dueDate : Date)
+  + reject(reason : String)
   + isOverdue() : boolean
+  + isDueSoon() : boolean
   + daysOverdue() : int
   + close()
 }
 class Fine {
   - fineId : int
-  - amount : float
+  - amount : int
   - overdueDays : int
   - isPaid : boolean
   --
-  + calculate() : float
   + markPaid()
 }
 class Reservation {
@@ -145,9 +154,6 @@ Loan "1" -- "0..1" Fine : may incur
 Member "1" -- "0..*" Fine : owes
 Member "1" -- "0..*" Reservation : places
 Book "1" -- "0..*" Reservation : reserved for
-BookCopy ..> CopyStatus
-Loan ..> LoanStatus
-Reservation ..> ReservationStatus
 
 note right of Librarian
   FR-16 "automatically": identifyOverdueLoans() is a
@@ -162,7 +168,10 @@ note bottom of Reservation
 end note
 
 note bottom of Fine
-  Business rule: 5 EGP per overdue day.
+  Business rules: 5 EGP per overdue day.
   Loan period: 14 days.
+  Max 3 = active loans + pending requests.
+  Overdue is derived from dueDate (not stored).
+  promoteMember sets User.role to LIBRARIAN.
 end note
 @enduml

@@ -20,7 +20,7 @@ digraph DFD1 {
   node [shape=none, fixedsize=false, fontsize=15];
   D1 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D1   Books</FONT></TD></TR></TABLE>>];
   D2 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D2   Book Copies</FONT></TD></TR></TABLE>>];
-  D3 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D3   Members</FONT></TD></TR></TABLE>>];
+  D3 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D3   Users (members and librarians)</FONT></TD></TR></TABLE>>];
   D4 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D4   Loans</FONT></TD></TR></TABLE>>];
   D5 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D5   Fines</FONT></TD></TR></TABLE>>];
   D6 [shape=none, margin=0, label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD SIDES="LTB" BORDER="2" BGCOLOR="#f1f5f9" CELLPADDING="9"><FONT POINT-SIZE="15">D6   Reservations</FONT></TD></TR></TABLE>>];
@@ -49,7 +49,7 @@ digraph DFD1 {
   P3 -> D4 [label="pending request"];
   P3 -> L [label="pending requests"];
   L -> P3 [label="confirmation or rejection"];
-  P3 -> P4 [label="approved request"];
+  P3 -> P4 [label="approved request\n(create loan)"];
 
   P4 -> D4 [label="loan record"];
   D4 -> P4 [label="loan, due date"];
@@ -64,13 +64,15 @@ digraph DFD1 {
   P5 -> D5 [label="fine record /\npaid status"];
   P5 -> D7 [label="overdue /\ndue-date notice"];
   P5 -> L [label="overdue report"];
-  P5 -> M [label="due-date /\noverdue notice"];
   P5 -> M [label="fines"];
   D5 -> P5 [label="fine history"];
   L -> P5 [label="fine payment"];
 
   M -> P6 [label="reservation request /\ncancellation"];
   P6 -> D2 [label="copy hold / release"];
+  D2 -> P6 [label="copy status"];
+  D3 -> P6 [label="member status"];
+  D5 -> P6 [label="unpaid fines"];
   P6 -> M [label="queue position"];
   P6 -> D6 [label="queue entry"];
   D6 -> P6 [label="waiting queue"];
@@ -83,12 +85,17 @@ digraph DFD1 {
   L -> P7 [label="book / copy changes"];
   P7 -> D1 [label="catalog updates"];
   P7 -> D2 [label="copy updates"];
+  D2 -> P7 [label="copy status"];
+  D4 -> P7 [label="open loans /\npending requests"];
+  D6 -> P7 [label="reservations"];
+  P7 -> L [label="confirmation or\nremoval refused"];
 
   L -> P8 [label="member account actions\n(view, suspension, promotion,\nremoval)"];
   P8 -> D3 [label="account status, role,\nmember removal"];
   D4 -> P8 [label="active loans"];
   P8 -> D4 [label="removed member's\nloan deletion"];
   P8 -> D6 [label="removed member's\nreservation deletion"];
+  P8 -> D5 [label="removed member's\npaid fine deletion"];
   D5 -> P8 [label="unpaid fines"];
   P8 -> L [label="member list"];
   D3 -> P8 [label="member records"];

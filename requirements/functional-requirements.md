@@ -7,7 +7,7 @@ The Library Management System helps librarians organize books, manage library me
 and track borrowing and returning activities. Members can search for books and check
 their availability before requesting to borrow them.
 
-**Actors:** Library Member, Librarian
+**Actors:** Library Member, Librarian (due-date notices and the overdue check are triggered by the system itself, there is no third actor)
 
 | ID | Actor | Requirement | Owner |
 | --- | --- | --- | --- |

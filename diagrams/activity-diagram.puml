@@ -6,45 +6,58 @@ title Library Management System: Borrow and Return Activity Diagram
 start
 :Search for a book;
 :View details and availability;
-if (Copies available?) then (no)
+if (Copies available?) then (no: all copies on loan)
   :Reserve the book;
   |System|
-  if (Member eligible to reserve?\n(account active, no unpaid fines)) then (no)
+  if (Member eligible to reserve?\n(account active, no unpaid fines)) then (yes)
+    :Add member to reservation queue;
+    :Send queue confirmation;
+    |Member|
+    :Receive confirmation;
+    stop
+  else (no)
+    |System|
     :Reject reservation with reason;
     |Member|
     :Receive rejection notice;
     stop
-  else (yes)
   endif
-  :Add member to reservation queue;
-  :Send queue confirmation;
-  |Member|
-  :Receive confirmation;
-  stop
 else (yes)
   :Submit borrow request;
 endif
 |System|
-if (Member eligible?\n(account active, no unpaid fines, fewer than 3 active loans)) then (no)
-  :Reject request with reason;
-  |Member|
-  :Receive rejection notice;
-  stop
-else (yes)
-endif
-|Librarian|
-:Review borrow request;
-if (Confirm request?) then (no)
+if (Member eligible?\n(account active, no unpaid fines,\nactive loans + pending requests < 3)) then (yes)
+  |Librarian|
+  :Review borrow request;
+  if (Confirm request?) then (yes)
+    |System|
+    :Re-check member and copy;
+    if (Still eligible and copy available?) then (yes)
+      :Record loan (borrow date, due date = +14 days);
+      :Mark copy as On Loan;
+      |Member|
+      :Receive loan confirmation (due date);
+    else (no)
+      |System|
+      :Reject request with reason;
+      |Member|
+      :Receive rejection notice;
+      stop
+    endif
+  else (no)
+    |System|
+    :Reject request with reason;
+    |Member|
+    :Receive rejection notice;
+    stop
+  endif
+else (no)
   |System|
   :Reject request with reason;
   |Member|
   :Receive rejection notice;
   stop
-else (yes)
 endif
-|System|
-:Record loan (borrow date, due date = +14 days);
-:Mark copy as On Loan;
 |Member|
 :Borrow and read the book;
 :Initiate return;
@@ -53,18 +66,25 @@ endif
 |System|
 if (Returned after due date?) then (yes)
   :Calculate fine\n(5 EGP x overdue days);
-  :Add fine to member account;
-  |Librarian|
-  :Record fine payment\nwhen the member pays at the desk;
-  |System|
-  :Mark fine as paid\n(unpaid-fine block is lifted);
+  :Add fine to member account\n(stays unpaid until paid);
 else (no)
 endif
 if (Reservation queue waiting?) then (yes)
   :Mark copy as Reserved;
   :Notify next member in queue;
+  |Member|
+  :Receive availability notice;
 else (no)
+  |System|
   :Mark copy as Available;
 endif
 stop
+
+note right
+  Fine payment is a separate step (not part of the return):
+  the librarian records the payment when the member pays
+  at the desk. The unpaid-fine block is lifted then.
+  FR-16 overdue loans are also listed in the overdue report
+  by the system; fines are created at return.
+end note
 @enduml
