@@ -15,7 +15,7 @@ function loadState() {
 }
 function saveState() { localStorage.setItem(LS_KEY, JSON.stringify(STATE)); }
 const STATE = Object.assign(
-  { addedBooks: [], removedBookIds: [], updatedBooks: {}, addedCopies: {},
+  { addedBooks: [], removedBookIds: [], updatedBooks: {}, addedCopies: {}, removedCopyIds: [],
     data: null, suspended: {}, user: null, accounts: [], addedMembers: [], promoted: {}, removedMembers: [] },
   loadState()
 );
@@ -60,6 +60,7 @@ function removeMemberData(id) {
     if (b) STATE.addedCopies[id].forEach(c => { if (!b.copies.some(x => x.id === c.id)) b.copies.push(c); });
   });
   STATE.addedBooks.forEach(b => { if (!bookById(b.id)) BOOKS.push(b); });
+  STATE.removedCopyIds.forEach(cid => BOOKS.forEach(b => { const i = b.copies.findIndex(c => c.id === cid); if (i >= 0) b.copies.splice(i, 1); }));
   STATE.addedMembers.forEach(m => { if (!MEMBERS.some(x => x.id === m.id)) MEMBERS.push(m); });
   if (STATE.data) {
     replaceContents(LOANS, STATE.data.loans);
@@ -468,8 +469,15 @@ function renderLibrarianDashboard() {
         STATE.updatedBooks[editingId] = patch;
         const added = STATE.addedBooks.find(x => x.id === editingId);
         if (added) Object.assign(added, patch);
-        saveState();
-        catSay(true, `"${data.title}" updated.`);
+        const res = LMS.setCopyCount(DB, editingId, data.copies, STATE.removedCopyIds);
+        res.added.forEach(c => { STATE.addedCopies[editingId] = (STATE.addedCopies[editingId] || []).concat(c); });
+        res.removed.forEach(c => {
+          STATE.removedCopyIds.push(c.id);
+          if (STATE.addedCopies[editingId]) STATE.addedCopies[editingId] = STATE.addedCopies[editingId].filter(x => x.id !== c.id);
+        });
+        persistData();
+        const bits = [res.added.length ? `${res.added.length} copy(ies) added` : "", res.removed.length ? `${res.removed.length} copy(ies) removed` : ""].filter(Boolean);
+        catSay(res.ok, res.ok ? `"${data.title}" updated${bits.length ? ": " + bits.join(", ") : ""}. Copies: ${res.total}.` : `"${data.title}" updated. ${res.error}`);
       }
       clearForm();
     } else {
@@ -504,17 +512,14 @@ function renderLibrarianDashboard() {
       document.getElementById("bt").value = b.title;
       document.getElementById("ba").value = b.author;
       document.getElementById("bc").value = b.category;
-      document.getElementById("bn").value = 1;
+      document.getElementById("bn").value = b.copies.length;
       document.getElementById("addbook").textContent = "Update book";
-      formSay(true, `Editing "${b.title}". Change the fields, then press Update book.`);
+      formSay(true, `Editing "${b.title}". Change the fields (Copies is the total), then press Update book.`);
       document.getElementById("book-form-card").scrollIntoView({ block: "center", behavior: "smooth" });
       document.getElementById("bt").focus({ preventScroll: true });
     } else if (btn.dataset.op === "copy") {
-      const c = newCopy(b);
-      b.copies.push(c);
-      STATE.addedCopies[id] = (STATE.addedCopies[id] || []).concat(c);
-      const added = STATE.addedBooks.find(x => x.id === id);
-      if (added && !added.copies.includes(c)) added.copies.push(c);
+      const res = LMS.setCopyCount(DB, id, b.copies.length + 1, STATE.removedCopyIds);
+      STATE.addedCopies[id] = (STATE.addedCopies[id] || []).concat(res.added);
       persistData();
       refreshAll();
       catSay(true, `Copy added to "${b.title}".`);

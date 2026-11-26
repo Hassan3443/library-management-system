@@ -260,6 +260,21 @@ test("librarian catalog: blocked Remove explains itself next to the table, Edit 
   assert(/catSay\(false/.test(app), "blocked Remove must show a message at the catalog");
   assert(/book-form-card"\)\.scrollIntoView/.test(app), "Edit must scroll the form into view");
 });
+test("setCopyCount: increase adds copies, decrease only removes available ones, ids never reused", () => {
+  const db = freshDb();
+  const b = db.BOOKS.find(x => x.id === 1);          // C1-1 available, C1-2 on loan
+  const r = L.setCopyCount(db, 1, 4, []);
+  assert(r.ok && r.added.length === 2 && b.copies.length === 4);
+  assert.deepStrictEqual(b.copies.map(c => c.id), ["C1-1", "C1-2", "C1-3", "C1-4"]);
+  const d = L.setCopyCount(db, 2, 1, []);              // both copies of book 2 are on loan: nothing removable
+  assert(d.ok === false && d.removed.length === 0 && db.BOOKS.find(x => x.id === 2).copies.length === 2);
+  assert(/on loan/.test(d.error));
+  const p = L.setCopyCount(db, 1, 1, []);              // 3 available removed, the on-loan copy stays
+  assert(p.ok && p.removed.length === 3 && b.copies.length === 1 && b.copies[0].status === "on-loan");
+  const again = L.setCopyCount(db, 1, 2, ["C1-2", "C1-3", "C1-4"]);
+  assert.strictEqual(again.added[0].id, "C1-5");        // retired ids are not reused
+  assert(!L.setCopyCount(db, 1, 0, []).ok);
+});
 
 let failed = 0;
 for (const [name, fn] of tests) {

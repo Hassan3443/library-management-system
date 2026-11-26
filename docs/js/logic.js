@@ -195,6 +195,39 @@
     return { ok: reasons.length === 0, reasons: reasons };
   }
 
+  /* Set the total number of copies of a book. Increases add new available copies.
+     Decreases remove only available copies (never one that is on loan, held or in maintenance),
+     so the target may not be reachable. `retired` lists copy ids removed earlier, so ids are never reused. */
+  function setCopyCount(db, bookId, target, retired) {
+    const book = db.BOOKS.find(b => b.id === bookId);
+    if (!book) return fail("Book not found.");
+    const n = Math.floor(Number(target));
+    if (!(n >= 1)) return fail("Copies must be at least 1.");
+    retired = retired || [];
+    const added = [], removed = [];
+    const suffix = id => Number(String(id).split("-")[1]) || 0;
+    if (n > book.copies.length) {
+      let next = Math.max(0, ...book.copies.map(c => suffix(c.id)), ...retired.filter(id => id.startsWith(`C${bookId}-`)).map(suffix)) + 1;
+      while (book.copies.length < n) {
+        const c = { id: `C${bookId}-${next++}`, status: "available", location: "Intake" };
+        book.copies.push(c); added.push(c);
+      }
+    } else if (n < book.copies.length) {
+      const free = book.copies.filter(c => c.status === "available").reverse();
+      while (book.copies.length > n && free.length) {
+        const c = free.shift();
+        book.copies.splice(book.copies.indexOf(c), 1); removed.push(c);
+      }
+    }
+    const total = book.copies.length;
+    if (total > n) {
+      const busy = total - availableCopies(book).length;
+      return { ok: false, added: added, removed: removed, total: total,
+        error: `${removed.length ? removed.length + " copy(ies) removed" : "No copies removed"}. ${busy} of ${total} are on loan, held or in maintenance, and only available copies can be removed.` };
+    }
+    return { ok: true, added: added, removed: removed, total: total };
+  }
+
   function removeBook(db, bookId) {
     const i = db.BOOKS.findIndex(b => b.id === bookId);
     if (i < 0) return fail("Book not found.");
@@ -228,7 +261,7 @@
 
   const api = { LOAN_DAYS, MAX_LOANS, parseDate, addDays, daysBetween, initSeq, eligibility, availableCopies,
     availabilityLabel, requestBorrow, reserve, cancelReservation, rejectRequest, confirmRequest, previewReturn,
-    returnLoan, payFine, canRemoveBook, removeBook, addBook, searchBooks };
+    returnLoan, payFine, canRemoveBook, setCopyCount, removeBook, addBook, searchBooks };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.LMS = api;
 })(typeof window !== "undefined" ? window : globalThis);
