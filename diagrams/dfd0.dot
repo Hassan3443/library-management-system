@@ -7,6 +7,6 @@ digraph DFD0 {
   S [label="0\nLibrary\nManagement\nSystem", shape=circle, style=filled, fillcolor="#dbeafe", color="#1d4ed8", width=2.2, fixedsize=true, fontsize=18];
   M -> S [label="registration, login, search criteria,\nborrow / return / reservation requests"];
   S -> M [label="book availability, loans,\nfines, notifications, queue position"];
-  L -> S [label="catalog and copy changes,\nloan confirmations, return processing,\nmember actions, login details"];
+  L -> S [label="catalog and copy changes,\nloan confirmations, return processing,\nmember actions, fine payments, login details"];
   S -> L [label="pending requests, overdue report,\nmember list, reservation queues,\nlogin result"];
 }

@@ -22,23 +22,31 @@ The system helps librarians organize books, manage members, and track borrowing 
 | Use Case Diagram | [diagrams/use-case-diagram.png](diagrams/use-case-diagram.png) ([source](diagrams/use-case-diagram.puml)) |
 | Front end (9 pages) | [docs/](docs/) |
 
-All diagrams are consistent with one another and with the 19 functional requirements, and the front end demonstrates the same flows.
+The diagrams, the 19 functional requirements and the front end were cross-checked against each other. Known differences are listed in [diagrams/README.md](diagrams/README.md#implementation-notes) and [requirements/functional-requirements.md](requirements/functional-requirements.md#known-limits).
 
 ## Front end
 
-Nine pages, static HTML/CSS/JS with mock data (no backend required, per the project brief). Demo actions that change state (librarian decisions, catalog edits, suspension, login) persist in the browser via localStorage:
+Nine pages, static HTML/CSS/JS with mock data (no backend required, per the project brief). Demo actions that change state (borrow requests, reservations, loan confirmations, returns, fines and fine payments, catalog edits, suspension, login) persist in the browser via localStorage. The business logic is in `docs/js/logic.js` and has automated tests (below):
 
 - **Home** - overview, live stats, feature map to the requirements
 - **Book Catalog** - search by title/author/category with live availability (FR-03, FR-04)
-- **Book Details** - copies and their status, borrow request and reservation actions (FR-05, FR-09)
+- **Book Details** - copies and their status, borrow request and reservation actions that are stored (FR-05, FR-09)
 - **Member Dashboard** - current loans, due-date reminders, overdue notices, fines, reservations (FR-06, FR-10, FR-11)
 - **Borrowing History** - every loan with return dates and late fines (FR-07)
-- **Return Book** - pick an active loan, see the fine calculation, confirm the return (FR-08, FR-15, FR-16)
-- **Librarian Dashboard** - pending borrow requests with persistent confirm/reject, overdue report with fines, full catalog management (add, update, remove books, register copies), member suspension, reservation queues (FR-12 to FR-18)
+- **Return Book** - pick an active loan, see the fine calculation, confirm the return: the loan is closed, the copy is freed or held for the reservation queue, and a late fine is recorded (FR-08, FR-15, FR-16)
+- **Librarian Dashboard** - pending borrow requests (confirm creates the loan, reject removes the request), unpaid fines with a record-payment action, overdue report with fines, full catalog management (add, update, remove books, register copies), member suspension, reservation queues (FR-12 to FR-18)
 - **Login / Register** (FR-01, FR-02) - real credential check against the demo accounts in `docs/js/accounts.js` (static demo, so the check runs in the browser). Wrong password does not log in. Each role gets its own navigation and dashboard. New members can register.
 - **Members** (librarian only) - list of members, suspend/reactivate, promote a member to librarian, remove a member (FR-17, FR-19)
 
 **Demo accounts:** librarian `hassan@gmail.com` / `12345678`; members `sara.m@example.com` / `sara1234`, `omar.k@example.com` / `omar1234`, `mona.s@example.com` / `mona1234` (no loans, can be removed), `hassan.ashraf@example.com` / `member101`.
+
+### Tests
+
+```bash
+node tests/logic.test.cjs
+```
+
+Runs the business logic (borrow, reserve, confirm, return, fines, book removal, seed data consistency) against fresh copies of the seed data. CI runs the same command on every push.
 
 ### Run it
 
@@ -54,8 +62,10 @@ cd docs && python3 -m http.server 8000
 
 - Loans run 14 days from librarian confirmation
 - Overdue fine: 5 EGP per overdue day
-- Members with unpaid fines or 3 active loans cannot borrow; the demo enforces this by blocking the borrow action on Book Details and flagging it on the Member Dashboard
-- Reservations are offered to the first member in the queue when a copy returns
+- Members who are suspended, have an unpaid fine, or have 3 loans (active plus pending requests) cannot borrow; the demo enforces this on Book Details, when a request is submitted and again when a librarian confirms it
+- Fines are paid at the desk; a librarian records the payment, which lifts the block
+- A book with open loans, pending requests or reservations cannot be removed
+- When a copy is returned and a queue exists, the copy is held (Reserved) for the first member in the queue
 
 ## Diagram sources
 

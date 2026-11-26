@@ -37,7 +37,7 @@ class Book {
   + updateDetails()
 }
 class BookCopy {
-  - copyId : int
+  - copyId : String
   - status : CopyStatus
   - location : String
   --
@@ -67,6 +67,7 @@ class Member {
   + viewHistory() : List                     <<FR-07>>
   + initiateReturn(loan : Loan)              <<FR-08>>
   + reserve(book : Book) : Reservation       <<FR-09>>
+  + cancelReservation(r : Reservation)       <<FR-09>>
   + viewFines() : List                       <<FR-10>>
   + receiveNotification() : Notification     <<FR-11>>
 }
@@ -81,6 +82,7 @@ class Librarian {
   + processReturn(loan : Loan)               <<FR-15>>
   + identifyOverdueLoans() : List            <<FR-16>>
   + calculateFine(loan : Loan) : Fine        <<FR-16>>
+  + recordFinePayment(fine : Fine)           <<FR-10>>
   + viewMembers() : List                     <<FR-17>>
   + suspendMember(member : Member)           <<FR-17>>
   + promoteMember(member : Member)           <<FR-17>>
@@ -149,6 +151,12 @@ note right of Librarian
   FR-16 "automatically": identifyOverdueLoans() is a
   scheduled check run on behalf of the librarian role
   (the system triggers it, no manual action needed).
+end note
+
+note bottom of Reservation
+  A reservation is for a book. When a copy comes back and
+  a queue exists, the returned copy is set to RESERVED
+  (held for the first member in the queue).
 end note
 
 note bottom of Fine

@@ -10,7 +10,7 @@ Each source has a rendered PNG next to it.
 | DFD Level 0 (context) | System boundary, 2 external entities | [dfd0.dot](dfd0.dot) |
 | DFD Level 1 | 8 processes, 7 data stores, all 19 requirements | [dfd1.dot](dfd1.dot) |
 | Class diagram | Every function FR-01 to FR-19 as an operation, tagged with its FR id | [class-diagram.puml](class-diagram.puml) |
-| Use case diagram | All 19 use cases, include and extend relations | [use-case-diagram.puml](use-case-diagram.puml) |
+| Use case diagram | 21 use cases covering all 19 requirements, include and extend relations | [use-case-diagram.puml](use-case-diagram.puml) |
 | Activity diagram | Borrow and return workflow with swimlanes | [activity-diagram.puml](activity-diagram.puml) |
 | Sequence diagram | Borrow request scenario (FR-05, FR-14) using class-diagram objects | [sequence-diagram.puml](sequence-diagram.puml) |
 
@@ -31,6 +31,15 @@ Each source has a rendered PNG next to it.
 
 ## Sequence Diagram
 ![Sequence Diagram](sequence-diagram.png)
+
+## Implementation notes
+
+Where the front end differs on purpose from the diagrams:
+
+- Status names are written ON_LOAN, ACTIVE and so on in the class diagram and on-loan, active in the code. Same values, different spelling. `copyId` is a String (for example C2-1) in both.
+- The sequence diagram creates a Loan in PENDING state at request time. The front end keeps a pending request as its own record and creates the Loan (ACTIVE) when the librarian confirms. REJECTED requests are removed instead of stored.
+- A cancelled reservation is deleted in the front end, so ReservationStatus values WAITING, NOTIFIED, FULFILLED and CANCELLED are not all stored. The held copy (RESERVED) is tied to the book queue, not to one reservation.
+- Fine keeps both a loan link and a member link in the class diagram. The code stores both ids on the fine.
 
 ## Regenerate
 

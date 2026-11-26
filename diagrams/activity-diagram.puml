@@ -9,6 +9,13 @@ start
 if (Copies available?) then (no)
   :Reserve the book;
   |System|
+  if (Member eligible to reserve?\n(account active, no unpaid fines)) then (no)
+    :Reject reservation with reason;
+    |Member|
+    :Receive rejection notice;
+    stop
+  else (yes)
+  endif
   :Add member to reservation queue;
   :Send queue confirmation;
   |Member|
@@ -47,6 +54,10 @@ endif
 if (Returned after due date?) then (yes)
   :Calculate fine\n(5 EGP x overdue days);
   :Add fine to member account;
+  |Librarian|
+  :Record fine payment\nwhen the member pays at the desk;
+  |System|
+  :Mark fine as paid\n(unpaid-fine block is lifted);
 else (no)
 endif
 if (Reservation queue waiting?) then (yes)

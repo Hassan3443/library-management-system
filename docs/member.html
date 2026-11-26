@@ -40,7 +40,8 @@
         <tbody id="loans"></tbody>
       </table>
     </div>
-    <h2>Outstanding fines</h2>
+    <h2>Fines</h2>
+    <p class="book-meta">Fines are paid at the library desk. A librarian records the payment and borrowing is unblocked.</p>
     <div class="card" style="padding:0; overflow:auto" id="fines-card">
       <table>
         <thead><tr><th>Fine</th><th>Loan</th><th>Overdue days</th><th>Amount</th><th>Status</th></tr></thead>
@@ -50,15 +51,16 @@
     <h2>My reservations</h2>
     <div class="card" style="padding:0; overflow:auto">
       <table>
-        <thead><tr><th>Book</th><th>Reserved on</th><th>Queue position</th></tr></thead>
+        <thead><tr><th>Book</th><th>Reserved on</th><th>Queue position</th><th></th></tr></thead>
         <tbody id="reservations"></tbody>
       </table>
     </div>
   </main>
   <footer class="site-footer">City Library</footer>
-  <script src="js/data.js?v=19"></script>
-  <script src="js/accounts.js?v=19"></script>
-  <script src="js/app.js?v=19"></script>
+  <script src="js/data.js?v=20"></script>
+  <script src="js/logic.js?v=20"></script>
+  <script src="js/accounts.js?v=20"></script>
+  <script src="js/app.js?v=20"></script>
   <script>renderMemberDashboard();</script>
 </body>
 </html>

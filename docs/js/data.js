@@ -17,7 +17,7 @@ const BOOKS = [
   { id: 7, title: "Design Patterns", author: "Erich Gamma", category: "Software", isbn: "978-0201633610", year: 1994,
     copies: [ { id: "C7-1", status: "available", location: "Shelf A2" } ] },
   { id: 8, title: "SQL in 10 Minutes", author: "Ben Forta", category: "Databases", isbn: "978-0135182796", year: 2019,
-    copies: [ { id: "C8-1", status: "available", location: "Shelf B2" }, { id: "C8-2", status: "reserved", location: "Shelf B2" } ] },
+    copies: [ { id: "C8-1", status: "available", location: "Shelf B2" }, { id: "C8-2", status: "available", location: "Shelf B2" } ] },
   { id: 9, title: "Hands-On Machine Learning", author: "Aurelien Geron", category: "Data Science", isbn: "978-1098125974", year: 2022,
     copies: [ { id: "C9-1", status: "on-loan", location: "Shelf C1" }, { id: "C9-2", status: "on-loan", location: "Shelf C1" } ] },
   { id: 10, title: "Operating System Concepts", author: "Abraham Silberschatz", category: "Systems", isbn: "978-1119800361", year: 2021,
@@ -54,8 +54,8 @@ const PENDING_REQUESTS = [
 ];
 
 const RESERVATIONS = [
-  { id: 701, memberId: 101, memberName: "Hassan Ashraf", bookId: 9, date: "2026-11-18", queuePosition: 1 },
-  { id: 702, memberId: 104, memberName: "Sara Mahmoud", bookId: 2, date: "2026-11-19", queuePosition: 1 }
+  { id: 701, memberId: 112, memberName: "Mona Samir", bookId: 9, date: "2026-11-18", queuePosition: 1 },
+  { id: 702, memberId: 104, memberName: "Sara Mahmoud", bookId: 6, date: "2026-11-19", queuePosition: 1 }
 ];
 
 const MEMBERS = [

@@ -61,14 +61,16 @@ digraph DFD1 {
   P4 -> P6 [label="copy returned"];
 
   D4 -> P5 [label="loans, due dates"];
-  P5 -> D5 [label="fine record"];
+  P5 -> D5 [label="fine record /\npaid status"];
   P5 -> D7 [label="overdue /\ndue-date notice"];
   P5 -> L [label="overdue report"];
   P5 -> M [label="due-date /\noverdue notice"];
   P5 -> M [label="fines"];
   D5 -> P5 [label="fine history"];
+  L -> P5 [label="fine payment"];
 
-  M -> P6 [label="reservation request"];
+  M -> P6 [label="reservation request /\ncancellation"];
+  P6 -> D2 [label="copy hold / release"];
   P6 -> M [label="queue position"];
   P6 -> D6 [label="queue entry"];
   D6 -> P6 [label="waiting queue"];
