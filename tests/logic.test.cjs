@@ -276,6 +276,14 @@ test("setCopyCount: increase adds copies, decrease only removes available ones, 
   assert(!L.setCopyCount(db, 1, 0, []).ok);
 });
 
+test("members page: action buttons sit in three fixed equal slots (layout never shifts on suspend)", () => {
+  const app = fs.readFileSync(path.join(__dirname, "../docs/js/app.js"), "utf8");
+  const css = fs.readFileSync(path.join(__dirname, "../docs/css/glass.css"), "utf8");
+  assert(/class="row-actions"/.test(app) && /data-suspend/.test(app));
+  assert(/\.row-actions\s*\{[^}]*grid-template-columns: repeat\(3, 96px\)/.test(css));
+  assert(/table-layout: fixed/.test(css));
+});
+
 let failed = 0;
 for (const [name, fn] of tests) {
   try { fn(); console.log("ok   " + name); } catch (e) { failed++; console.log("FAIL " + name + "\n     " + e.message); }

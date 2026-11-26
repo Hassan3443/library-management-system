@@ -560,9 +560,9 @@ function renderMembersPage() {
       return `<tr><td><div class="book-title">${esc(m.name)}</div></td><td>${esc(m.email)}</td>
        <td>${loans}</td><td>${fines ? fines + " EGP" : "-"}</td>
        <td>${m.suspended ? '<span class="badge danger">Suspended</span>' : '<span class="badge ok">Active</span>'}${isLib ? ' <span class="badge info">Librarian</span>' : ""}</td>
-       <td><button class="btn small secondary" data-suspend="${m.id}">${m.suspended ? "Reactivate" : "Suspend"}</button>
-       ${acc && !isLib ? `<button class="btn small" data-promote="${m.id}">Make librarian</button>` : ""}
-       ${isLib ? `<button class="btn small danger" data-demote="${m.id}">Remove librarian role</button>` : `<button class="btn small danger" data-remove="${m.id}">Remove member</button>`}</td></tr>`;
+       <td><div class="row-actions"><button class="btn small secondary" data-suspend="${m.id}">${m.suspended ? "Reactivate" : "Suspend"}</button>
+       ${acc && !isLib ? `<button class="btn small" data-promote="${m.id}" title="Make librarian">Promote</button>` : "<span></span>"}
+       ${isLib ? `<button class="btn small danger" data-demote="${m.id}" title="Remove librarian role">Demote</button>` : `<button class="btn small danger" data-remove="${m.id}" title="Remove member">Remove</button>`}</div></td></tr>`;
     }).join("");
     staffEl.innerHTML = allAccounts().filter(x => accountRole(x) === "librarian").map(x =>
       `<tr><td><div class="book-title">${esc(x.name)}</div></td><td>${esc(x.email)}</td>

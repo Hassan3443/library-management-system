@@ -212,3 +212,19 @@ footer.site-footer::before { background: #fff; }
 .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
 #catalog-msg, #form-msg { margin: 0 0 14px; }
 #form-msg { margin: 14px 0 0; }
+
+/* Members actions: three fixed equal slots so Suspend/Reactivate never shifts the layout */
+.row-actions { display: grid; grid-template-columns: repeat(3, 96px); gap: 8px; align-items: center; }
+.row-actions .btn { width: 100%; white-space: nowrap; justify-content: center; text-align: center; padding-left: 6px; padding-right: 6px; }
+#members td:nth-child(1) { white-space: nowrap; }
+#members td:nth-child(5) { white-space: nowrap; min-width: 150px; }
+@media (max-width: 720px) { .row-actions { grid-template-columns: repeat(3, 1fr); width: 100%; } }
+@media (min-width: 721px) {
+  table:has(#members) { table-layout: fixed; min-width: 960px; }
+  table:has(#members) th:nth-child(1) { width: 140px; }
+  table:has(#members) th:nth-child(3) { width: 100px; }
+  table:has(#members) th:nth-child(4) { width: 110px; }
+  table:has(#members) th:nth-child(5) { width: 150px; }
+  table:has(#members) th:nth-child(6) { width: 330px; }
+  #members td:nth-child(2) { overflow: hidden; text-overflow: ellipsis; }
+}
