@@ -427,6 +427,15 @@ function renderLibrarianDashboard() {
 
   /* Catalog management: add, update, remove books and register copies. */
   const catBody = document.getElementById("catalog-table");
+  /* Messages for catalog actions appear next to the catalog, not at the top of the page. */
+  const catSay = (ok, text) => {
+    const el = document.getElementById("catalog-msg");
+    el.innerHTML = `<div class="notice${ok ? " ok" : ""}">${esc(text)}</div>`;
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+  };
+  const formSay = (ok, text) => {
+    document.getElementById("form-msg").innerHTML = `<div class="notice${ok ? " ok" : ""}">${esc(text)}</div>`;
+  };
   let editingId = null;
 
   function readForm() {
@@ -449,7 +458,8 @@ function renderLibrarianDashboard() {
 
   document.getElementById("addbook").addEventListener("click", () => {
     const data = readForm();
-    if (!data.title) { say(false, "Enter a book title."); return; }
+    if (!data.title) { formSay(false, "Enter a book title."); return; }
+    document.getElementById("form-msg").innerHTML = "";
     if (editingId) {
       const b = bookById(editingId);
       if (b) {
@@ -459,14 +469,14 @@ function renderLibrarianDashboard() {
         const added = STATE.addedBooks.find(x => x.id === editingId);
         if (added) Object.assign(added, patch);
         saveState();
-        say(true, `"${data.title}" updated.`);
+        catSay(true, `"${data.title}" updated.`);
       }
       clearForm();
     } else {
       const res = LMS.addBook(DB, data);
       STATE.addedBooks.push(res.book);
       persistData();
-      say(true, `"${res.book.title}" added to the catalog with ${res.book.copies.length} cop(y/ies).`);
+      catSay(true, `"${res.book.title}" added with ${res.book.copies.length} cop(y/ies).`);
     }
     refreshAll();
   });
@@ -477,7 +487,9 @@ function renderLibrarianDashboard() {
        <td>${availableCopies(b)} / ${b.copies.length}</td>
        <td><button class="btn small secondary" data-op="edit" data-id="${b.id}">Edit</button>
            <button class="btn small secondary" data-op="copy" data-id="${b.id}">+ Copy</button>
-           <button class="btn small danger" data-op="remove" data-id="${b.id}">Remove</button></td></tr>`
+           ${(() => { const c = LMS.canRemoveBook(DB, b.id);
+             return c.ok ? `<button class="btn small danger" data-op="remove" data-id="${b.id}">Remove</button>`
+               : `<button class="btn small danger" data-op="remove" data-id="${b.id}" aria-disabled="true" title="Cannot remove: ${esc(c.reasons.join(", "))}">Remove</button>`; })()}</td></tr>`
     ).join("");
   }
 
@@ -494,7 +506,9 @@ function renderLibrarianDashboard() {
       document.getElementById("bc").value = b.category;
       document.getElementById("bn").value = 1;
       document.getElementById("addbook").textContent = "Update book";
-      window.scrollTo(0, 0);
+      formSay(true, `Editing "${b.title}". Change the fields, then press Update book.`);
+      document.getElementById("book-form-card").scrollIntoView({ block: "center", behavior: "smooth" });
+      document.getElementById("bt").focus({ preventScroll: true });
     } else if (btn.dataset.op === "copy") {
       const c = newCopy(b);
       b.copies.push(c);
@@ -503,14 +517,15 @@ function renderLibrarianDashboard() {
       if (added && !added.copies.includes(c)) added.copies.push(c);
       persistData();
       refreshAll();
+      catSay(true, `Copy added to "${b.title}".`);
     } else if (btn.dataset.op === "remove") {
       const res = LMS.removeBook(DB, id);
-      if (!res.ok) { say(false, `"${b.title}": ${res.error}`); return; }
+      if (!res.ok) { catSay(false, `"${b.title}": ${res.error}`); return; }
       if (!STATE.removedBookIds.includes(id)) STATE.removedBookIds.push(id);
       delete STATE.updatedBooks[id];
       delete STATE.addedCopies[id];
       persistData();
-      say(true, `"${b.title}" removed from the catalog.`);
+      catSay(true, `"${b.title}" removed from the catalog.`);
       refreshAll();
     }
   });

@@ -207,3 +207,8 @@ footer.site-footer::before { background: #fff; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .card, .hero, .stat { background: rgba(70, 20, 50, .72); }
 }
+
+/* Blocked actions stay clickable (they explain why) but look disabled */
+.btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+#catalog-msg, #form-msg { margin: 0 0 14px; }
+#form-msg { margin: 14px 0 0; }

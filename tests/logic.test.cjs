@@ -252,6 +252,14 @@ test("search matches title, author, category and ISBN", () => {
   assert.strictEqual(L.searchBooks(db.BOOKS, "").length, db.BOOKS.length);
   assert.strictEqual(L.searchBooks(db.BOOKS, "zzz").length, 0);
 });
+test("librarian catalog: blocked Remove explains itself next to the table, Edit form is brought into view", () => {
+  const html = fs.readFileSync(path.join(__dirname, "../docs/librarian.html"), "utf8");
+  const app = fs.readFileSync(path.join(__dirname, "../docs/js/app.js"), "utf8");
+  assert(html.includes('id="catalog-msg"') && html.includes('id="book-form-card"'));
+  assert(/aria-disabled="true" title="Cannot remove/.test(app), "blocked Remove needs a tooltip reason");
+  assert(/catSay\(false/.test(app), "blocked Remove must show a message at the catalog");
+  assert(/book-form-card"\)\.scrollIntoView/.test(app), "Edit must scroll the form into view");
+});
 
 let failed = 0;
 for (const [name, fn] of tests) {
