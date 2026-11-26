@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=19">
+  <link rel="stylesheet" href="css/glass.css?v=1">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -93,7 +94,7 @@
   <script src="js/app.js?v=20"></script>
   <script>
     const activeLoans = LOANS.filter(l => !l.returnDate).length;
-    const overdue = LOANS.filter(l => !l.returnDate && l.status === "overdue").length;
+    const overdue = LOANS.filter(l => !l.returnDate && overdueDays(l) > 0).length;
     document.getElementById("stats").innerHTML = [
       { num: BOOKS.length, lbl: "Titles in catalog" },
       { num: BOOKS.reduce((n, b) => n + b.copies.length, 0), lbl: "Total copies" },
