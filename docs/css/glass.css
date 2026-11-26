@@ -165,10 +165,19 @@ tbody:empty::before, .empty-state, .grid:empty::before { color: var(--muted); bo
 .badge.danger { background: #fde4e1; color: #a02424; }
 .badge.info { background: #e0f0f2; color: #1d5a63; }
 .badge.muted { background: #eceaf0; color: #4a4560; }
-.notice { background: rgba(255, 248, 230, .93); color: #3a2410; border: 1px solid #fff; border-left: 5px solid #e8a13a;
-  border-radius: 16px; box-shadow: 0 6px 22px rgba(40, 8, 30, .25); }
-.notice.ok { background: rgba(228, 248, 237, .95); color: #123a24; border-left-color: #2e9e5e; }
-.notice a { color: #7a2432; }
+.notice, .notice.ok {
+  --accent: #ffc247; --tint: rgba(255, 178, 60, .22);
+  background: linear-gradient(100deg, var(--tint), rgba(255, 255, 255, .06) 70%), linear-gradient(rgba(48, 8, 30, .38), rgba(48, 8, 30, .38));
+  color: #fff; border: 1px solid rgba(255, 255, 255, .4); border-left: 5px solid var(--accent);
+  border-radius: 18px; box-shadow: 0 8px 26px rgba(40, 8, 30, .3), inset 0 1px 0 rgba(255, 255, 255, .35), 0 0 22px color-mix(in srgb, var(--accent) 25%, transparent);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+}
+.notice.ok { --accent: #4ae28f; --tint: rgba(60, 214, 128, .24); }
+.notice, .notice.ok { border-color: rgba(255, 255, 255, .4); border-left-color: var(--accent); }
+.notice::before { background: var(--accent); color: #3a1c00; font-weight: 800; box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 70%, transparent); }
+.notice.ok::before { color: #05301a; }
+.notice a { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; }
+.notice a:hover { color: var(--accent); }
 
 /* ---------- Book covers, feature rows, footer ---------- */
 .book-cover { background: linear-gradient(145deg, #ffb27a, #d4513f); color: #fff; border-left: 4px solid #fff;
@@ -182,7 +191,7 @@ footer.site-footer::before { background: #fff; }
 ::marker { color: #ffd9a8; }
 
 /* ---------- One animation only: slow backdrop drift ---------- */
-.hero::before, .badge.ok::before, .feat-aside span::after, tbody tr.row-in, .stat, main > *, .feat-row { animation: none !important; }
+.hero::before, .badge.ok::before, .feat-aside span::after, tbody tr.row-in, .stat, main > *, .feat-row, .notice, .notice::before { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
 
 /* ---------- Mobile ---------- */
